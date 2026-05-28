@@ -28,6 +28,7 @@ namespace TaskFlow.Controllers
         public IActionResult Create(Company company)
         {
             _companyService.AddCompany(company);
+            TempData["SuccessMessage"] = "Company saved successfully!";
             return RedirectToAction("Index");
         }
 
@@ -40,13 +41,20 @@ namespace TaskFlow.Controllers
         [HttpPost]
         public IActionResult Edit(Company company)
         {
+            var existingCompany = _companyService.GetCompanyById(company.Id);
+            if(existingCompany == null)
+            {
+                return NotFound();
+            }
             _companyService.UpdateCompany(company);
+            TempData["success"] = "Company updated successfully!";
             return RedirectToAction("Index");
         }
 
         public IActionResult Delete(int id)
         {
             _companyService.DeleteCompany(id);
+            TempData["SuccessMessage"] = "Company deleted successfully!";
             return RedirectToAction("Index");
         }
     }

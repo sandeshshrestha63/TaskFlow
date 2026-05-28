@@ -1,0 +1,68 @@
+﻿@model List<TaskFlow.Models.Company>
+
+<div class="card-custom">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Companies</h3>
+
+        <a class="btn btn-primary" asp-controller="Company" asp-action="Create">
+            <i class="bi bi-plus-lg"></i> Add Company
+        </a>
+    </div>
+    <partial name="partial/_notification"/>
+    <table class="table table-hover align-middle">
+
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th width="180">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Email</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">
+                                Edit
+                            </a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        No companies found
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+</div>

@@ -1,49 +1,201 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var ctrl = ViewContext.RouteData.Values["controller"].ToString();
+    var action = ViewContext.RouteData.Values["action"].ToString();
+    action = action == "Index" ? "List" : action;
+
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TaskFlow.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TaskFlow</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+    <div class="tf-app">
+
+        <!-- ═══════════════ SIDEBAR ═══════════════ -->
+        <aside class="tf-sidebar" id="sidebar">
+
+            <div class="tf-sidebar-logo">
+                <div class="tf-logo-mark">
+                    <i class="bi bi-kanban-fill"></i>
+                </div>
+                <span class="tf-logo-text">TaskFlow</span>
+                <span class="tf-logo-badge">PRO</span>
+            </div>
+
+            <nav class="tf-sidebar-nav">
+                <div class="tf-nav-section-label">Workspace</div>
+
+                <a asp-controller="Home" asp-action="Index"
+                   class="tf-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                    <i class="bi bi-speedometer2 tf-nav-icon"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a asp-controller="Company" asp-action="Index"
+                   class="tf-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Company" ? "active" : "")">
+                    <i class="bi bi-building tf-nav-icon"></i>
+                    <span>Companies</span>
+                </a>
+
+                <a asp-controller="Employee" asp-action="Index"
+                   class="tf-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Employee" ? "active" : "")">
+                    <i class="bi bi-people tf-nav-icon"></i>
+                    <span>Employees</span>
+                </a>
+
+                <a asp-controller="Task" asp-action="Index"
+                   class="tf-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Task" ? "active" : "")">
+                    <i class="bi bi-list-task tf-nav-icon"></i>
+                    <span>Tasks</span>
+                    <span class="tf-nav-badge">12</span>
+                </a>
+
+                <div class="tf-nav-section-label" style="margin-top: 8px">Reports</div>
+
+                <a href="#" class="tf-nav-item">
+                    <i class="bi bi-bar-chart-line tf-nav-icon"></i>
+                    <span>Analytics</span>
+                </a>
+
+                <a href="#" class="tf-nav-item">
+                    <i class="bi bi-calendar3 tf-nav-icon"></i>
+                    <span>Calendar</span>
+                </a>
+            </nav>
+
+            <!-- Project list -->
+            <div class="tf-sidebar-projects">
+                <div class="tf-nav-section-label">Projects</div>
+                <div class="tf-project-item">
+                    <span class="tf-project-dot" style="background:#6366f1"></span>
+                    <span>Website Redesign</span>
+                </div>
+                <div class="tf-project-item">
+                    <span class="tf-project-dot" style="background:#10b981"></span>
+                    <span>Mobile App v2</span>
+                </div>
+                <div class="tf-project-item">
+                    <span class="tf-project-dot" style="background:#f59e0b"></span>
+                    <span>Q3 Marketing</span>
+                </div>
+                <div class="tf-project-item">
+                    <span class="tf-project-dot" style="background:#ef4444"></span>
+                    <span>API Migration</span>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+            <!-- User -->
+            <div class="tf-sidebar-footer">
+                <div class="tf-user-row">
+                    <div class="tf-user-avatar">AD</div>
+                    <div>
+                        <div class="tf-user-name">Admin</div>
+                        <div class="tf-user-role">Administrator</div>
+                    </div>
+                    <i class="bi bi-chevron-expand tf-user-chevron"></i>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- ═══════════════ MAIN ═══════════════ -->
+        <div class="tf-main">
+
+            <!-- TOPBAR -->
+            <header class="tf-topbar">
+                <div class="tf-topbar-left">
+                    <button class="tf-menu-btn d-lg-none" id="sidebarToggle" aria-label="Toggle sidebar">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div class="tf-breadcrumb">
+                        <span class="tf-breadcrumb-root">Workspace</span>
+                        <i class="bi bi-chevron-right tf-breadcrumb-sep"></i>
+                        <span class="tf-breadcrumb-page">@(ctrl)</span>
+                       
+                        <i class="bi bi-chevron-right tf-breadcrumb-sep"></i>
+                        <span class="tf-breadcrumb-page">@(action)</span>
+                    </div>
+                </div>
+
+                <div class="tf-topbar-right">
+                    <div class="tf-search-wrap">
+                        <i class="bi bi-search tf-search-icon"></i>
+                        <input type="text" class="tf-search-input" placeholder="Search tasks, projects…" />
+                        <kbd class="tf-search-kbd">⌘K</kbd>
+                    </div>
+
+                    <div class="tf-topbar-actions">
+                        <div class="tf-icon-btn-wrap">
+                            <button class="tf-icon-btn" title="Notifications">
+                                <i class="bi bi-bell"></i>
+                            </button>
+                            <span class="tf-notif-dot"></span>
+                        </div>
+                        <button class="tf-icon-btn" title="Settings">
+                            <i class="bi bi-gear"></i>
+                        </button>
+                        <div class="tf-topbar-divider"></div>
+                        <button class="tf-btn-primary">
+                            <i class="bi bi-plus-lg"></i>
+                            New Task
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- PAGE CONTENT -->
+            <main class="tf-content">
+                @RenderBody()
+            </main>
+
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - TaskFlow - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <!-- Sidebar overlay for mobile -->
+    <div class="tf-sidebar-overlay" id="sidebarOverlay"></div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Sidebar toggle (mobile)
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('visible');
+            });
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('visible');
+            });
+        }
+
+        // Search focus shortcut
+        document.addEventListener('keydown', e => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                document.querySelector('.tf-search-input')?.focus();
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

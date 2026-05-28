@@ -30,8 +30,18 @@ namespace TaskFlow.Services
 
         public void UpdateCompany(Company company)
         {
-            _context.Companies.Update(company);
-            _context.SaveChanges();
+            var existing = _context.Companies.FirstOrDefault(x => x.Id == company.Id);
+
+            if (existing != null)
+            {
+                existing.Name = company.Name;
+                existing.Email = company.Email;
+                existing.PhoneNumber = company.PhoneNumber;
+                existing.Address = company.Address;
+                existing.IsActive = company.IsActive;
+
+                _context.SaveChanges();
+            }
         }
 
         public void DeleteCompany(int id)
