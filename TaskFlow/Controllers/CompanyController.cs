@@ -28,7 +28,7 @@ namespace TaskFlow.Controllers
         public IActionResult Create(Company company)
         {
             _companyService.AddCompany(company);
-            TempData["SuccessMessage"] = "Company saved successfully!";
+            TempData["success"] = "Company saved successfully!";
             return RedirectToAction("Index");
         }
 
@@ -54,7 +54,7 @@ namespace TaskFlow.Controllers
         public IActionResult Delete(int id)
         {
             _companyService.DeleteCompany(id);
-            TempData["SuccessMessage"] = "Company deleted successfully!";
+            TempData["success"] = "Company deleted successfully!";
             return RedirectToAction("Index");
         }
     }

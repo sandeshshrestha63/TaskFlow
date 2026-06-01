@@ -48,9 +48,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // ------------------------------------------------------------
 #endregion
 builder.Services.AddScoped<CompanyService>();
-
+builder.Services.AddScoped<EmployeeService>();
 var app = builder.Build();
 
+
+//Please dont change the order let it stay as it is, otherwise it will break the code and the application will not run.
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

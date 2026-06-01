@@ -12,7 +12,6 @@
     <Folder Include="Middleware\" />
     <Folder Include="DTOs\" />
     <Folder Include="Interfaces\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
