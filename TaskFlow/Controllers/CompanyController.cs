@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TaskFlow.Constants;
 using TaskFlow.Models;
 using TaskFlow.Services;
 
 namespace TaskFlow.Controllers
 {
+    [Authorize(Policy = Policies.SuperAdminOnly)]
     public class CompanyController : Controller
     {
         private readonly CompanyService _companyService;

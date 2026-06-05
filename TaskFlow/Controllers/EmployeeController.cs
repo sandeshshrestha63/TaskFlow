@@ -1,24 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Constants;
 using TaskFlow.Models;
 using TaskFlow.Services;
 using TaskFlow.ViewModels;
 
 namespace TaskFlow.Controllers
 {
+    [Authorize(Policy = Policies.CompanyAccess)]
     public class EmployeeController : Controller
     {
         private readonly EmployeeService _employeeService;
         private readonly CompanyService _companyService;
+        private readonly CurrentUserServices _currentUserServices;
 
-        public EmployeeController(EmployeeService employeeService, CompanyService companyService)
+        public EmployeeController(CurrentUserServices currentUserServices ,EmployeeService employeeService, CompanyService companyService)
         {
             _employeeService = employeeService;
             _companyService = companyService;
+            _currentUserServices = currentUserServices;
         }
         public async Task<IActionResult> Index()
         {
-            var employees = await _employeeService.GetAllEmployees();
+            var CompanyId = await _currentUserServices.GetCompanyId();
+            var employees = await _employeeService.GetAllEmployees(CompanyId);
             return View(employees);
         }
 
@@ -47,10 +53,10 @@ namespace TaskFlow.Controllers
         {
             if (!ModelState.IsValid)
                 return View(employee);
-
+            var companyId = await _currentUserServices.GetCompanyId();
             var emp = new Employee
             {
-                CompanyId = employee.CompanyId,
+                CompanyId = companyId,
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
                 Email = employee.Email,
@@ -88,13 +94,13 @@ namespace TaskFlow.Controllers
         {
             if (!ModelState.IsValid)
                 return View(employee);
-
+            var companyId = await _currentUserServices.GetCompanyId();
             var employeeVM = new Employee
             {
                 Id = employee.Id,
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
-                CompanyId = employee.CompanyId,
+                CompanyId = companyId,
                 Email = employee.Email
             };
             await _employeeService.UpdateEmployee(employeeVM);

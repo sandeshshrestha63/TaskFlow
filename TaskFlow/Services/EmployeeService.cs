@@ -13,9 +13,9 @@ namespace TaskFlow.Services
             _context = context;
         }
 
-        public async Task<List<Employee>> GetAllEmployees()
+        public async Task<List<Employee>> GetAllEmployees(int CompanyId)
         {
-            return await _context.Employees.Include(e => e.Company).ToListAsync();
+            return await _context.Employees.Where(a => a.CompanyId == CompanyId).Include(e => e.Company).ToListAsync();
         }
 
         public async Task<Employee?> GetEmployeeById(int id)

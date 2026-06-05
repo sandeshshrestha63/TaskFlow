@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Constants;
 using TaskFlow.Data;
 using TaskFlow.Models;
+using TaskFlow.SeedData;
 using TaskFlow.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,18 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
+//policy improvised version of the roles we can centralize the authorize option and we can apply flexible logics in the policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Policies.SuperAdminOnly,
+        policy => policy.RequireRole(Roles.SuperAdmin));
+
+    options.AddPolicy(Policies.CompanyAccess,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.CompanyAdmin));
+
+    options.AddPolicy(Policies.EmployeeAccess,
+        policy => policy.RequireRole(Roles.Employee, Roles.CompanyAdmin));
+});
 
 
 #region comment
@@ -63,11 +77,18 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 //
 // ------------------------------------------------------------
 #endregion
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<CurrentUserServices>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<EmployeeService>();
 var app = builder.Build();
+//Runs once on the http request and clears out all the instance created to run it
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
 
-
+    await IdentitySeeder.SeedRolesAndAdminAsync(services);
+}
 //Please dont change the order let it stay as it is, otherwise it will break the code and the application will not run.
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -84,6 +105,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

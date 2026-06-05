@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TaskFlow.Models;
+using TaskFlow.Constants;
 
 namespace TaskFlow.Areas.Identity.Pages.Account
 {
@@ -22,11 +23,13 @@ namespace TaskFlow.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager,UserManager<ApplicationUser> userManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -116,7 +119,26 @@ namespace TaskFlow.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                    if (await _userManager.IsInRoleAsync(user, Roles.SuperAdmin))
+                    {
+                        return RedirectToAction("Index", "Dashboard");
+                    }
+
+                    if (await _userManager.IsInRoleAsync(user, Roles.CompanyAdmin))
+                    {
+                        return RedirectToAction("Index", "Company");
+                    }
+
+                    if (await _userManager.IsInRoleAsync(user, Roles.Employee))
+                    {
+                        return RedirectToAction("MyTasks", "Task");
+                    }
+
+                    // fallback
+                    return RedirectToAction("Index", "Home");
                 }
                 if (result.RequiresTwoFactor)
                 {
