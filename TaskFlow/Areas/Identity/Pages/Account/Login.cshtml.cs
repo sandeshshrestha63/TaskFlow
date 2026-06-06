@@ -122,23 +122,26 @@ namespace TaskFlow.Areas.Identity.Pages.Account
 
                     var user = await _userManager.FindByEmailAsync(Input.Email);
 
-                    if (await _userManager.IsInRoleAsync(user, Roles.SuperAdmin))
+                    // Reload sign-in to ensure fresh claims are loaded
+                    await _signInManager.RefreshSignInAsync(user);
+
+                    // Role-based redirect (optional but recommended)
+                    if (await _userManager.IsInRoleAsync(user, "SuperAdmin"))
                     {
                         return RedirectToAction("Index", "Dashboard");
                     }
 
-                    if (await _userManager.IsInRoleAsync(user, Roles.CompanyAdmin))
+                    if (await _userManager.IsInRoleAsync(user, "CompanyAdmin"))
                     {
                         return RedirectToAction("Index", "Company");
                     }
 
-                    if (await _userManager.IsInRoleAsync(user, Roles.Employee))
+                    if (await _userManager.IsInRoleAsync(user, "Employee"))
                     {
-                        return RedirectToAction("MyTasks", "Task");
+                        return RedirectToAction("Index", "Employee");
                     }
 
-                    // fallback
-                    return RedirectToAction("Index", "Home");
+                    return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {

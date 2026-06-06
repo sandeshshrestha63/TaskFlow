@@ -28,5 +28,10 @@ namespace TaskFlow.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        public IActionResult Debug()
+        {
+            return Content(string.Join("\n",
+                User.Claims.Select(c => $"{c.Type}: {c.Value}")));
+        }
     }
 }

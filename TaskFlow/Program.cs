@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Constants;
 using TaskFlow.Data;
+using TaskFlow.Identity;
+using TaskFlow.Interfaces;
 using TaskFlow.Models;
 using TaskFlow.SeedData;
 using TaskFlow.Services;
@@ -25,6 +27,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,ApplicationUserClaimsPrincipalFactory>();
+
 //policy improvised version of the roles we can centralize the authorize option and we can apply flexible logics in the policy
 builder.Services.AddAuthorization(options =>
 {
@@ -37,7 +42,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(Policies.EmployeeAccess,
         policy => policy.RequireRole(Roles.Employee, Roles.CompanyAdmin));
 });
-
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
 
 #region comment
 // ------------------------------------------------------------
@@ -78,7 +87,8 @@ builder.Services.AddAuthorization(options =>
 // ------------------------------------------------------------
 #endregion
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<CurrentUserServices>();
+builder.Services.AddScoped<ICurrentUserServices, CurrentUserServices>();
+
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<EmployeeService>();
 var app = builder.Build();

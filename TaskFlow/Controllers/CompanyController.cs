@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Constants;
+using TaskFlow.Interfaces;
 using TaskFlow.Models;
 using TaskFlow.Services;
 
 namespace TaskFlow.Controllers
 {
     [Authorize(Policy = Policies.SuperAdminOnly)]
-    public class CompanyController : Controller
+    public class CompanyController : BaseController
     {
         private readonly CompanyService _companyService;
 
-        public CompanyController(CompanyService companyService)
+        public CompanyController(ICurrentUserServices currentUser,CompanyService companyService) :base(currentUser)
         {
             _companyService = companyService;
         }

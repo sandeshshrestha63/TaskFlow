@@ -48,6 +48,9 @@
                             <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">
                                 Delete
                             </a>
+                            <a class="btn btn-sm btn-success" asp-action="Create" asp-controller="User" asp-route-id="@item.Id">
+                                Add User
+                            </a>
                         </td>
                     </tr>
                 }

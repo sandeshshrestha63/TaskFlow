@@ -15,4 +15,13 @@
         public const string CompanyAccess = "CompanyAccess";
         public const string EmployeeAccess = "EmployeeAccess";
     }
+    public static class CustomClaims
+    {
+        public const string CompanyId = "CompanyId";
+    }
+    public static class TempDataKeys
+    {
+        public const string Success = "success";
+        public const string Error = "error";
+    }
 }

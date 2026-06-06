@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Constants;
+using TaskFlow.Interfaces;
 using TaskFlow.Models;
 using TaskFlow.Services;
 using TaskFlow.ViewModels;
@@ -9,21 +10,19 @@ using TaskFlow.ViewModels;
 namespace TaskFlow.Controllers
 {
     [Authorize(Policy = Policies.CompanyAccess)]
-    public class EmployeeController : Controller
+    public class EmployeeController : BaseController
     {
         private readonly EmployeeService _employeeService;
         private readonly CompanyService _companyService;
-        private readonly CurrentUserServices _currentUserServices;
 
-        public EmployeeController(CurrentUserServices currentUserServices ,EmployeeService employeeService, CompanyService companyService)
+        public EmployeeController(ICurrentUserServices currentUser,EmployeeService employeeService,CompanyService companyService): base(currentUser)
         {
             _employeeService = employeeService;
             _companyService = companyService;
-            _currentUserServices = currentUserServices;
         }
         public async Task<IActionResult> Index()
         {
-            var CompanyId = await _currentUserServices.GetCompanyId();
+            var CompanyId = CurrentUser.CompanyId;
             var employees = await _employeeService.GetAllEmployees(CompanyId);
             return View(employees);
         }
@@ -53,7 +52,7 @@ namespace TaskFlow.Controllers
         {
             if (!ModelState.IsValid)
                 return View(employee);
-            var companyId = await _currentUserServices.GetCompanyId();
+            var companyId = CurrentUser.CompanyId;
             var emp = new Employee
             {
                 CompanyId = companyId,
@@ -94,7 +93,7 @@ namespace TaskFlow.Controllers
         {
             if (!ModelState.IsValid)
                 return View(employee);
-            var companyId = await _currentUserServices.GetCompanyId();
+            var companyId = CurrentUser.CompanyId;
             var employeeVM = new Employee
             {
                 Id = employee.Id,
