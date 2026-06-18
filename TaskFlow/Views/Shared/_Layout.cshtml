@@ -36,32 +36,37 @@
 
             <nav class="tf-sidebar-nav">
                 <div class="tf-nav-section-label">Workspace</div>
-
                 <a asp-controller="Home" asp-action="Index"
-                   class="tf-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                   class="tf-nav-item @(ctrl == "Dashboard" ? "active" : "")">
                     <i class="bi bi-speedometer2 tf-nav-icon"></i>
                     <span>Dashboard</span>
                 </a>
+                @if (User.IsInRole(Roles.SuperAdmin))
+                {
+                    <a asp-controller="Company" asp-action="Index" class="tf-nav-item @(ctrl == "Company" ? "active" : "")">
+                        <i class="bi bi-building tf-nav-icon"></i>
+                        <span>Companies</span>
+                    </a>
 
-                <a asp-controller="Company" asp-action="Index"
-                   class="tf-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Company" ? "active" : "")">
-                    <i class="bi bi-building tf-nav-icon"></i>
-                    <span>Companies</span>
-                </a>
-
-                <a asp-controller="Employee" asp-action="Index"
-                   class="tf-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Employee" ? "active" : "")">
-                    <i class="bi bi-people tf-nav-icon"></i>
-                    <span>Employees</span>
-                </a>
-
-                <a asp-controller="Task" asp-action="Index"
-                   class="tf-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Task" ? "active" : "")">
-                    <i class="bi bi-list-task tf-nav-icon"></i>
-                    <span>Tasks</span>
-                    <span class="tf-nav-badge">12</span>
-                </a>
-
+                    <a asp-controller="User" asp-action="Index" class="tf-nav-item @(ctrl == "User" ? "active" : "")">
+                        <i class="bi bi-people tf-nav-icon"></i>
+                        <span>Users</span>
+                    </a>
+                }
+                @if (User.IsInRole(Roles.CompanyAdmin))
+                {
+                    <a asp-controller="User" asp-action="EmployeeList" class="tf-nav-item @(ctrl == "User" ? "active" : "")">
+                        <i class="bi bi-people tf-nav-icon"></i>
+                        <span>Employees</span>
+                    </a>
+                }
+                @if (User.IsInRole(Roles.Employee))
+                {
+                    <a asp-controller="Task" asp-action="MyTasks" class="tf-nav-item @(ctrl == "Task" ? "active" : "")">
+                        <i class="bi bi-list-task tf-nav-icon"></i>
+                        <span>My Tasks</span>
+                    </a>
+                }
                 <div class="tf-nav-section-label" style="margin-top: 8px">Reports</div>
 
                 <a href="#" class="tf-nav-item">

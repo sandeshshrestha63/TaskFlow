@@ -27,5 +27,67 @@ namespace TaskFlow.Data
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeTask> EmployeeTasks { get; set; }
+
+        public DbSet<EmployeeTaskStatus> EmployeeTaskStatus { get; set; }
+
+        public DbSet<EmployeeTaskPriority> TaskPriorities { get; set; }
+
+        public DbSet<TaskComment> TaskComments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<EmployeeTask>()
+                .HasOne(x => x.Company)
+                .WithMany()
+                .HasForeignKey(x => x.CompanyId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<EmployeeTask>()
+                .HasOne(x => x.CreatedByEmployee)
+                .WithMany()
+                .HasForeignKey(x => x.CreatedByEmployeeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<EmployeeTask>()
+                .HasOne(x => x.AssignedToEmployee)
+                .WithMany()
+                .HasForeignKey(x => x.AssignedToEmployeeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<EmployeeTask>()
+                .HasOne(x => x.EmployeeTaskStatus)
+                .WithMany(x => x.Tasks)
+                .HasForeignKey(x => x.EmployeeTaskStatusId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<EmployeeTask>()
+                .HasOne(x => x.EmployeeTaskPriority)
+                .WithMany(x => x.Tasks)
+                .HasForeignKey(x => x.EmployeeTaskPriorityId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TaskComment>()
+                .HasOne(x => x.EmployeeTask)
+                .WithMany(x => x.Comments)
+                .HasForeignKey(x => x.EmployeeTaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskComment>()
+                .HasOne(x => x.CreatedByEmployee)
+                .WithMany()
+                .HasForeignKey(x => x.CreatedByEmployeeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<EmployeeTask>()
+                .Property(x => x.EstimatedHours)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<EmployeeTask>()
+                .Property(x => x.ActualHours)
+                .HasPrecision(18, 2);
+        }
     }
 }

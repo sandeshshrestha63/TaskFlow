@@ -126,20 +126,14 @@ namespace TaskFlow.Areas.Identity.Pages.Account
                     await _signInManager.RefreshSignInAsync(user);
 
                     // Role-based redirect (optional but recommended)
-                    if (await _userManager.IsInRoleAsync(user, "SuperAdmin"))
-                    {
+                    if (await _userManager.IsInRoleAsync(user, Roles.SuperAdmin))
                         return RedirectToAction("Index", "Dashboard");
-                    }
 
-                    if (await _userManager.IsInRoleAsync(user, "CompanyAdmin"))
-                    {
-                        return RedirectToAction("Index", "Company");
-                    }
+                    if (await _userManager.IsInRoleAsync(user, Roles.CompanyAdmin))
+                        return RedirectToAction("Index", "Dashboard");
 
-                    if (await _userManager.IsInRoleAsync(user, "Employee"))
-                    {
-                        return RedirectToAction("Index", "Employee");
-                    }
+                    if (await _userManager.IsInRoleAsync(user, Roles.Employee))
+                        return RedirectToAction("Index", "Dashboard");
 
                     return LocalRedirect(returnUrl);
                 }
