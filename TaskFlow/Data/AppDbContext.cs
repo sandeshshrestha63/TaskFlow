@@ -6,7 +6,8 @@ namespace TaskFlow.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
             // This constructor receives database configuration from ASP.NET Core's Dependency Injection system.
 
             // DbContextOptions<AppDbContext> contains all database-related settings such as:
@@ -88,6 +89,11 @@ namespace TaskFlow.Data
             modelBuilder.Entity<EmployeeTask>()
                 .Property(x => x.ActualHours)
                 .HasPrecision(18, 2);
+            modelBuilder.Entity<Employee>()
+                .HasOne(x => x.ApplicationUser)
+                .WithOne()
+                .HasForeignKey<Employee>(x => x.ApplicationUserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

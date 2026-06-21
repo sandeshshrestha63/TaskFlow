@@ -16,7 +16,7 @@ namespace TaskFlow.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AppDbContext _context;
-        public UserController(UserManager<ApplicationUser> userManager,AppDbContext context,ICurrentUserServices currentUser) : base(currentUser)
+        public UserController(UserManager<ApplicationUser> userManager,AppDbContext context,ICurrentUserServices currentUser) : base(currentUser,context)
         {
             _userManager = userManager;
             _context = context;
@@ -47,11 +47,11 @@ namespace TaskFlow.Controllers
         }
 
         [Authorize(Policy = Policies.SuperAdminOnly)]
-        public IActionResult Create(int companyId)
+        public IActionResult Create(int Id)
         {
             var model = new UserViewModel
             {
-                CompanyId = companyId,
+                CompanyId = Id,
                 Role = Roles.CompanyAdmin // default for this flow
             };
 

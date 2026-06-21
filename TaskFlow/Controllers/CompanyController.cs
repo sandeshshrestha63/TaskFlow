@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TaskFlow.Constants;
+using TaskFlow.Data;
 using TaskFlow.Interfaces;
 using TaskFlow.Models;
 using TaskFlow.Services;
@@ -12,7 +14,7 @@ namespace TaskFlow.Controllers
     {
         private readonly CompanyService _companyService;
 
-        public CompanyController(ICurrentUserServices currentUser,CompanyService companyService) :base(currentUser)
+        public CompanyController(AppDbContext context, ICurrentUserServices currentUser, CompanyService companyService) : base(currentUser, context)
         {
             _companyService = companyService;
         }
@@ -29,11 +31,37 @@ namespace TaskFlow.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Company company)
+        public async Task<IActionResult> Create(Company company)
         {
-            _companyService.AddCompany(company);
+            Company data = _companyService.AddCompany(company);
+            await CreateDefaultTaskStatuses(data.Id);
             TempData["success"] = "Company saved successfully!";
             return RedirectToAction("Index");
+        }
+        private async Task CreateDefaultTaskStatuses(int companyId)
+        {
+            var statuses = new List<EmployeeTaskStatus>
+            {
+                new() { CompanyId = companyId, Name = "Pending", DisplayOrder = 1, IsActive = true },
+                new() { CompanyId = companyId, Name = "In Progress", DisplayOrder = 2, IsActive = true },
+                new() { CompanyId = companyId, Name = "On Hold", DisplayOrder = 3, IsActive = true },
+                new() { CompanyId = companyId, Name = "Completed", DisplayOrder = 4, IsActive = true },
+                new() { CompanyId = companyId, Name = "Cancelled", DisplayOrder = 5, IsActive = true }
+            };
+
+            _db.EmployeeTaskStatus.AddRange(statuses);
+
+            var priorities = new List<EmployeeTaskPriority>
+            {
+                new() { CompanyId = companyId, Name = "Low", DisplayOrder = 1, IsDefault = false, IsSystem = true, IsActive = true },
+                new() { CompanyId = companyId,Name = "Medium", DisplayOrder = 2, IsDefault = true, IsSystem = true, IsActive = true },
+                new() { CompanyId = companyId, Name = "High", DisplayOrder = 3, IsDefault = false, IsSystem = true, IsActive = true },
+                new() { CompanyId = companyId, Name = "Critical", DisplayOrder = 4, IsDefault = false, IsSystem = true, IsActive = true }
+            };
+
+            _db.TaskPriorities.AddRange(priorities);
+
+            await _db.SaveChangesAsync();
         }
 
         public IActionResult Edit(int id)
@@ -46,7 +74,7 @@ namespace TaskFlow.Controllers
         public IActionResult Edit(Company company)
         {
             var existingCompany = _companyService.GetCompanyById(company.Id);
-            if(existingCompany == null)
+            if (existingCompany == null)
             {
                 return NotFound();
             }

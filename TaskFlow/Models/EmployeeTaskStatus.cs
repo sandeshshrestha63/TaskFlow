@@ -15,7 +15,8 @@ namespace TaskFlow.Models
         public int DisplayOrder { get; set; }
 
         public bool IsActive { get; set; }
-
+        public bool IsSystem { get; set; }
+        public bool IsDefault { get; set; }
         public Company Company { get; set; }
 
         public ICollection<EmployeeTask> Tasks { get; set; }

@@ -12,10 +12,11 @@ namespace TaskFlow.Services
             _context = context;
         }
 
-        public void AddCompany(Company company)
+        public Company AddCompany(Company company)
         {
             _context.Companies.Add(company);
             _context.SaveChanges();
+            return company;
         }
 
         public List<Company> GetAllCompanies()

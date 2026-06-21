@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Constants;
+using TaskFlow.Data;
 using TaskFlow.Interfaces;
 using TaskFlow.Models;
 using TaskFlow.Services;
@@ -15,7 +16,7 @@ namespace TaskFlow.Controllers
         private readonly EmployeeService _employeeService;
         private readonly CompanyService _companyService;
 
-        public EmployeeController(ICurrentUserServices currentUser,EmployeeService employeeService,CompanyService companyService): base(currentUser)
+        public EmployeeController(AppDbContext context,ICurrentUserServices currentUser,EmployeeService employeeService,CompanyService companyService): base(currentUser,context)
         {
             _employeeService = employeeService;
             _companyService = companyService;

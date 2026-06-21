@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Constants;
+using TaskFlow.Data;
 using TaskFlow.Interfaces;
 using TaskFlow.Services;
 
@@ -8,10 +9,11 @@ namespace TaskFlow.Controllers
     public abstract class BaseController : Controller
     {
         protected readonly ICurrentUserServices CurrentUser;
-
-        protected BaseController(ICurrentUserServices currentUser)
+        protected readonly AppDbContext _db;
+        protected BaseController(ICurrentUserServices currentUser, AppDbContext db)
         {
             CurrentUser = currentUser;
+            _db = db;
         }
 
         protected int? CompanyId => CurrentUser.CompanyId;

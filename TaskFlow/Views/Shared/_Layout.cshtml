@@ -67,6 +67,30 @@
                         <span>My Tasks</span>
                     </a>
                 }
+                @if (User.IsInRole(Roles.CompanyAdmin))
+                {
+                    <div class="tf-nav-section-label" style="margin-top: 8px">
+                        Task Management
+                    </div>
+
+                    <a asp-controller="EmployeeTask" asp-action="Index"
+                       class="tf-nav-item @(ctrl == "EmployeeTask" ? "active" : "")">
+                        <i class="bi bi-list-task tf-nav-icon"></i>
+                        <span>Tasks</span>
+                    </a>
+
+                    <a asp-controller="TaskStatus" asp-action="Index"
+                       class="tf-nav-item @(ctrl == "TaskStatus" ? "active" : "")">
+                        <i class="bi bi-flag tf-nav-icon"></i>
+                        <span>Task Status</span>
+                    </a>
+
+                    <a asp-controller="TaskPriority" asp-action="Index"
+                       class="tf-nav-item @(ctrl == "TaskPriority" ? "active" : "")">
+                        <i class="bi bi-exclamation-circle tf-nav-icon"></i>
+                        <span>Task Priority</span>
+                    </a>
+                }
                 <div class="tf-nav-section-label" style="margin-top: 8px">Reports</div>
 
                 <a href="#" class="tf-nav-item">
