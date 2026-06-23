@@ -18,6 +18,7 @@
     public static class CustomClaims
     {
         public const string CompanyId = "CompanyId";
+        public const string EmployeeId = "EmployeeId";
     }
     public static class TempDataKeys
     {

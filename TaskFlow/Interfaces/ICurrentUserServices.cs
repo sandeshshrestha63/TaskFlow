@@ -4,6 +4,7 @@
     {
         string? UserId { get; }
         int CompanyId { get; }
+        int EmployeeId { get; }
         string? Email { get; }
         bool IsAuthenticated { get; }
         bool IsInRole(string role);

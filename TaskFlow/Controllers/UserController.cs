@@ -76,7 +76,17 @@ namespace TaskFlow.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-
+            var employee = new Employee
+            {
+                FirstName = model.FullName.ToString().Split(' ').FirstOrDefault(),
+                LastName = model.FullName.ToString().Split(' ').LastOrDefault(),
+                Email = model.Email,
+                CompanyId = model.CompanyId.Value,
+                CreatedAt = DateTime.UtcNow,
+                ApplicationUserId = user.Id,
+            };
+            _context.Employees.Add(employee);
+            _context.SaveChanges();
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)

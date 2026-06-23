@@ -22,12 +22,19 @@ namespace TaskFlow.Services
         public string? UserId => User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         public string? Email => User?.FindFirst(ClaimTypes.Email)?.Value;
-
         public int CompanyId
         {
             get
             {
                 var claim = User?.FindFirst(CustomClaims.CompanyId);
+                return claim != null ? int.Parse(claim.Value) : 0;
+            }
+        }
+        public int EmployeeId
+        {
+            get
+            {
+                var claim = User?.FindFirst(CustomClaims.EmployeeId);
                 return claim != null ? int.Parse(claim.Value) : 0;
             }
         }

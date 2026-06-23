@@ -19,6 +19,7 @@ namespace TaskFlow.Controllers
         protected int? CompanyId => CurrentUser.CompanyId;
 
         protected string? UserId => CurrentUser.UserId;
+        protected int? EmployeeId => CurrentUser.EmployeeId;
 
         protected string? UserEmail => CurrentUser.Email;
 
