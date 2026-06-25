@@ -1,0 +1,143 @@
+﻿@model EmployeeTaskDataVM
+
+<div class="container-fluid">
+    <div class="card shadow-sm border-0">
+        <!-- HEADER -->
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Create Task</h4>
+                <small class="text-muted">
+                    Edit task
+                </small>
+            </div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Back to List
+            </a>
+        </div>
+        <!-- BODY -->
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger">
+                </div>
+                <div class="row">
+                    <!-- TITLE -->
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="Title" class="form-label fw-semibold">
+                            Task Title
+                        </label>
+                        <input asp-for="Title" class="form-control" placeholder="Enter task title" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="col-md-12 mb-3">
+
+                        <label asp-for="Description"
+                               class="form-label fw-semibold">
+                            Description
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  rows="5"
+                                  class="form-control"
+                                  placeholder="Describe the task..."></textarea>
+
+                    </div>
+
+                    <!-- ASSIGNED TO -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="AssignedToEmployeeId"
+                               class="form-label fw-semibold">
+                            Assign To
+                        </label>
+                        <select asp-for="AssignedToEmployeeId" class="form-select">
+                            <option value=""> Select Employee </option>
+                            @foreach (var employee in ViewBag.Employees)
+                            {
+                                if (employee.Id == Model.AssignedToEmployeeId)
+                                {
+                                    <option value="@employee.Id" selected>
+                                        @employee.FirstName @employee.LastName
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@employee.Id">
+                                        @employee.FirstName @employee.LastName
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="AssignedToEmployeeId"
+                              class="text-danger"></span>
+                    </div>
+
+                    <!-- PRIORITY -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EmployeeTaskPriorityId" class="form-label fw-semibold">
+                            Priority
+                        </label>
+                        <select asp-for="EmployeeTaskPriorityId" class="form-select">
+                            <option value="">
+                                Select Priority
+                            </option>
+
+                            @foreach (var priority in ViewBag.Priorities)
+                            {
+                                if (priority.Id == Model.EmployeeTaskPriorityId)
+                                {
+                                    <option value="@priority.Id" selected>
+                                        @priority.Name
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@priority.Id">
+                                        @priority.Name
+                                    </option>
+                                }
+                            }
+
+                        </select>
+                        <span asp-validation-for="EmployeeTaskPriorityId" class="text-danger"></span>
+
+                    </div>
+
+                    <!-- DUE DATE -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DueDate" class="form-label fw-semibold">
+                            Due Date
+                        </label>
+                        <input asp-for="DueDate" type="date" class="form-control" />
+                    </div>
+
+                    <!-- ESTIMATED HOURS -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EstimatedHours" class="form-label fw-semibold">
+                            Estimated Hours
+                        </label>
+                        <input asp-for="EstimatedHours" class="form-control" placeholder="e.g. 4" />
+                    </div>
+                </div>
+
+                <!-- FOOTER BUTTONS -->
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i>
+                        Edit Task
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

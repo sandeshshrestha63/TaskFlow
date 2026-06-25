@@ -22,6 +22,7 @@ namespace TaskFlow.Services
         public string? UserId => User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         public string? Email => User?.FindFirst(ClaimTypes.Email)?.Value;
+        public string? FullName => User?.FindFirst(CustomClaims.FullName)?.Value;
         public int CompanyId
         {
             get

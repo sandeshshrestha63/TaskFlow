@@ -23,6 +23,7 @@ namespace TaskFlow.Controllers
 
         protected string? UserEmail => CurrentUser.Email;
 
+        protected string? FullName => CurrentUser.FullName;
         protected bool IsSuperAdmin => CurrentUser.IsInRole(Roles.SuperAdmin);
 
         protected bool IsCompanyAdmin => CurrentUser.IsInRole(Roles.CompanyAdmin);

@@ -1,6 +1,6 @@
 ﻿@model TaskFlow.ViewModels.UserViewModel
 
-<h2>Create Company Admin</h2>
+<h2>Create Company User</h2>
 
 <form asp-action="Create" method="post">
 
@@ -9,7 +9,11 @@
 
     <div class="mb-3">
         <label>Full Name</label>
-        <input asp-for="FullName" class="form-control" />
+        <input asp-for="FirstName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Last Name</label>
+        <input asp-for="LastName" class="form-control" />
     </div>
 
     <div class="mb-3">
@@ -22,5 +26,5 @@
         <input asp-for="Password" class="form-control" type="password" />
     </div>
 
-    <button class="btn btn-primary">Create Admin</button>
+    <button class="btn btn-primary">Create User</button>
 </form>

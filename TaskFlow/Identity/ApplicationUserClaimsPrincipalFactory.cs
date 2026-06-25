@@ -20,6 +20,8 @@ namespace TaskFlow.Identity
         {
             var identity = await base.GenerateClaimsAsync(user);
 
+            identity.AddClaim(new Claim(CustomClaims.FullName, user.FullName ?? ""));
+
             if (user.CompanyId.HasValue)
             {
                 identity.AddClaim(new Claim(CustomClaims.CompanyId,user.CompanyId.Value.ToString()));

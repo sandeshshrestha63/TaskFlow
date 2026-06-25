@@ -42,11 +42,11 @@ namespace TaskFlow.Controllers
         {
             var statuses = new List<EmployeeTaskStatus>
             {
-                new() { CompanyId = companyId, Name = "Pending", DisplayOrder = 1, IsActive = true },
-                new() { CompanyId = companyId, Name = "In Progress", DisplayOrder = 2, IsActive = true },
-                new() { CompanyId = companyId, Name = "On Hold", DisplayOrder = 3, IsActive = true },
-                new() { CompanyId = companyId, Name = "Completed", DisplayOrder = 4, IsActive = true },
-                new() { CompanyId = companyId, Name = "Cancelled", DisplayOrder = 5, IsActive = true }
+                new() { CompanyId = companyId, Name = "Pending", DisplayOrder = 1, IsActive = true, IsSystem = true, IsDefault = true },
+                new() { CompanyId = companyId, Name = "In Progress", DisplayOrder = 2, IsActive = true, IsSystem = true },
+                new() { CompanyId = companyId, Name = "On Hold", DisplayOrder = 3, IsActive = true, IsSystem = true },
+                new() { CompanyId = companyId, Name = "Completed", DisplayOrder = 4, IsActive = true, IsSystem = true },
+                new() { CompanyId = companyId, Name = "Cancelled", DisplayOrder = 5, IsActive = true, IsSystem = true }
             };
 
             _db.EmployeeTaskStatus.AddRange(statuses);

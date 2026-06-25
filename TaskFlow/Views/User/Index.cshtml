@@ -25,7 +25,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.FullName</td>
+                <td>@(item.FirstName + " " + item.LastName) </td>
                 <td>@item.Email</td>
                 <td>@item.CompanyName</td>
                 <td>@item.Role</td>

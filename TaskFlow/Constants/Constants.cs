@@ -19,6 +19,7 @@
     {
         public const string CompanyId = "CompanyId";
         public const string EmployeeId = "EmployeeId";
+        public const string FullName = "FullName";
     }
     public static class TempDataKeys
     {

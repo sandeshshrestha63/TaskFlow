@@ -1,0 +1,306 @@
+﻿@model TaskIndexVM
+
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<div class="container-fluid">
+
+    <div class="card shadow-sm border-0">
+
+        <!-- HEADER -->
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                <div>
+                    <h4 class="mb-0 fw-bold">Task Management</h4>
+                    <small class="text-muted">
+                        Manage, assign and track employee tasks
+                    </small>
+                </div>
+
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    New Task
+                </a>
+
+            </div>
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body">
+
+            <!-- FILTERS -->
+            <form method="get">
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-lg-3 col-md-6">
+                        <input type="text"
+                               name="searchText"
+                               value="@Model.SearchText"
+                               class="form-control"
+                               placeholder="Search task..." />
+                    </div>
+
+                    <div class="col-lg-2 col-md-6">
+                        <select name="employeeId" class="form-select">
+
+                            <option value="">
+                                All Employees
+                            </option>
+
+                            @foreach (var item in ViewBag.Employees)
+                            {
+                                <option value="@item.Id"
+                                        selected="@(Model.EmployeeId == item.Id)">
+                                    @item.FirstName @item.LastName
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6">
+                        <select name="statusId" class="form-select">
+
+                            <option value="">
+                                All Statuses
+                            </option>
+
+                            @foreach (var item in ViewBag.Statuses)
+                            {
+                                <option value="@item.Id"
+                                        selected="@(Model.StatusId == item.Id)">
+                                    @item.Name
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6">
+                        <select name="priorityId" class="form-select">
+
+                            <option value="">
+                                All Priorities
+                            </option>
+
+                            @foreach (var item in ViewBag.Priorities)
+                            {
+                                <option value="@item.Id"
+                                        selected="@(Model.PriorityId == item.Id)">
+                                    @item.Name
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3 col-md-12">
+
+                        <div class="d-flex gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="bi bi-funnel"></i>
+                                Filter
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                Reset
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+            <!-- TASK TABLE -->
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>Task</th>
+                            <th>Assigned To</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Created</th>
+                            <th width="180">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.Tasks != null && Model.Tasks.Any())
+                        {
+                            foreach (var item in Model.Tasks)
+                            {
+                                <tr>
+
+                                    <td>
+
+                                        <div class="fw-semibold">
+                                            @item.Title
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        @item.AssignedTo
+                                    </td>
+
+                                    <!-- PRIORITY -->
+                                    <td>
+
+                                        @if (item.Priority.ToLower().Contains("critical"))
+                                        {
+                                            <span class="badge bg-dark">
+                                                @item.Priority
+                                            </span>
+                                        }
+                                        else if (item.Priority.ToLower().Contains("high"))
+                                        {
+                                            <span class="badge bg-danger">
+                                                @item.Priority
+                                            </span>
+                                        }
+                                        else if (item.Priority.ToLower().Contains("medium"))
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                @item.Priority
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                @item.Priority
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <!-- STATUS -->
+                                    <td>
+
+                                        @if (item.Status.ToLower().Contains("completed"))
+                                        {
+                                            <span class="badge bg-success">
+                                                @item.Status
+                                            </span>
+                                        }
+                                        else if (item.Status.ToLower().Contains("progress"))
+                                        {
+                                            <span class="badge bg-primary">
+                                                @item.Status
+                                            </span>
+                                        }
+                                        else if (item.Status.ToLower().Contains("cancel"))
+                                        {
+                                            <span class="badge bg-danger">
+                                                @item.Status
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                @item.Status
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <!-- DUE DATE -->
+                                    <td>
+
+                                        @if (item.IsOverDue)
+                                        {
+                                            <span class="text-danger fw-bold">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                @item.DueDate?.ToString("dd MMM yyyy")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            @item.DueDate?.ToString("dd MMM yyyy")
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        @item.CreatedDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <!-- ACTIONS -->
+                                    <td>
+
+                                        <div class="btn-group d-flex gap-2">
+
+                                            <a asp-action="Details"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-outline-primary">
+                                                View
+                                            </a>
+
+                                            <a asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-outline-warning">
+                                                Edit
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="7"
+                                    class="text-center py-5">
+
+                                    <div class="text-muted">
+
+                                        <i class="bi bi-list-task display-6 d-block mb-3"></i>
+
+                                        <h5>No Tasks Found</h5>
+
+                                        <p class="mb-3">
+                                            No tasks match your current filters.
+                                        </p>
+
+                                        <a asp-action="Create"
+                                           class="btn btn-primary">
+                                            Create First Task
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

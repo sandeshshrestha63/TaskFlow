@@ -11,7 +11,7 @@ using TaskFlow.ViewModels;
 
 namespace TaskFlow.Controllers
 {
-    [Authorize(Policy = Policies.SuperAdminOnly)]
+    [Authorize(Policy = Policies.CompanyAccess)]
     public class UserController : BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -27,7 +27,10 @@ namespace TaskFlow.Controllers
             var users = await _context.Users.Include(x => x.Company).ToListAsync();
 
             var model = new List<UserViewModel>();
-
+            if(IsCompanyAdmin)
+            {
+                users = users.Where(a => a.CompanyId == CompanyId).ToList();
+            }
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -35,7 +38,8 @@ namespace TaskFlow.Controllers
                 model.Add(new UserViewModel
                 {
                     Id = user.Id,
-                    FullName = user.FullName,
+                    FirstName = user.FullName?.Split(" ").FirstOrDefault(),
+                    LastName = user.FullName?.Split(" ").LastOrDefault(),
                     Email = user.Email,
                     CompanyName = user.Company?.Name,
                     Role = roles.FirstOrDefault(),
@@ -46,7 +50,6 @@ namespace TaskFlow.Controllers
             return View(model);
         }
 
-        [Authorize(Policy = Policies.SuperAdminOnly)]
         public IActionResult Create(int Id)
         {
             var model = new UserViewModel
@@ -54,13 +57,18 @@ namespace TaskFlow.Controllers
                 CompanyId = Id,
                 Role = Roles.CompanyAdmin // default for this flow
             };
+            if(IsCompanyAdmin)
+            {
+                model.Role = Roles.Employee;
+                model.CompanyId = CompanyId;
+            }
 
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = Policies.SuperAdminOnly)]
+        [Authorize(Policy = Policies.CompanyAccess)]
         public async Task<IActionResult> Create(UserViewModel model)
         {
             if (!ModelState.IsValid)
@@ -70,7 +78,7 @@ namespace TaskFlow.Controllers
             {
                 UserName = model.Email,
                 Email = model.Email,
-                FullName = model.FullName,
+                FullName = model.FirstName + " " + model.LastName ,
                 CompanyId = model.CompanyId,
                 IsActive = true
             };
@@ -78,8 +86,8 @@ namespace TaskFlow.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             var employee = new Employee
             {
-                FirstName = model.FullName.ToString().Split(' ').FirstOrDefault(),
-                LastName = model.FullName.ToString().Split(' ').LastOrDefault(),
+                FirstName = model.FirstName,
+                LastName = model.LastName,
                 Email = model.Email,
                 CompanyId = model.CompanyId.Value,
                 CreatedAt = DateTime.UtcNow,
@@ -96,7 +104,7 @@ namespace TaskFlow.Controllers
             }
             await _userManager.AddToRoleAsync(user, model.Role);
             SuccessMessage("Company Admin Created successfully");
-            return RedirectToAction("Index", "Company");
+            return RedirectToAction("Index", "User");
         }
     }
 }
