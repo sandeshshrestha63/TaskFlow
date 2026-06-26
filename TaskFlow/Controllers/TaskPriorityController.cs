@@ -41,6 +41,7 @@ namespace TaskFlow.Controllers
                 DisplayOrder = vm.DisplayOrder,
                 IsDefault = vm.IsDefault,
                 IsSystem = false,
+                ColorCode = vm.ColorCode,
                 IsActive = vm.IsActive,
             };
             _db.TaskPriorities.Add(status);
@@ -64,7 +65,9 @@ namespace TaskFlow.Controllers
                 Id = priority.Id,
                 Name = priority.Name,
                 DisplayOrder = priority.DisplayOrder,
-                IsActive = priority.IsActive
+                IsActive = priority.IsActive,
+                ColorCode = priority.ColorCode,
+
             };
             return View(vm);
         }
@@ -102,7 +105,8 @@ namespace TaskFlow.Controllers
             priority.Name = vm.Name;
             priority.DisplayOrder = vm.DisplayOrder; 
             priority.IsActive = vm.IsActive; 
-            priority.IsDefault = vm.IsDefault; 
+            priority.IsDefault = vm.IsDefault;
+            priority.ColorCode = vm.ColorCode;
             await _db.SaveChangesAsync(); 
             TempData["Success"] = "Status updated successfully."; 
             return RedirectToAction(nameof(Index));

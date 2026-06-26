@@ -26,4 +26,15 @@
         public const string Success = "success";
         public const string Error = "error";
     }
+
+    public static class TaskActivityTypes
+    {
+        public const string Created = "Created";
+        public const string Updated = "Updated";
+        public const string Assigned = "Assigned";
+        public const string PriorityChanged = "Priority Changed";
+        public const string StatusChanged = "Status Changed";
+        public const string CommentAdded = "Comment Added";
+        public const string Completed = "Completed";
+    }
 }

@@ -15,5 +15,6 @@ namespace TaskFlow.ViewModels
         [Display(Name = "Active")]
         public bool IsActive { get; set; } = true;
         public bool IsDefault { get; set; }
+        public string ColorCode { get; set; }
     }
 }

@@ -88,6 +88,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 #endregion
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserServices, CurrentUserServices>();
+builder.Services.AddScoped<ITaskActivityService,TaskActivityService>();
 
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<EmployeeService>();

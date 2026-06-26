@@ -14,6 +14,9 @@ namespace TaskFlow.Models
         public string Description { get; set; }
 
         public int CompanyId { get; set; }
+        public int? ProjectId { get; set; }
+
+        public int? SprintId { get; set; }
 
         public int CreatedByEmployeeId { get; set; }
 
@@ -51,6 +54,7 @@ namespace TaskFlow.Models
 
         public EmployeeTaskPriority EmployeeTaskPriority { get; set; }
 
-        public ICollection<TaskComment> Comments { get; set; }
+        public ICollection<TaskComment> Comments { get; set; } = new List<TaskComment>();
+        public ICollection<TaskActivity> Activities { get; set; } = new List<TaskActivity>();
     }
 }

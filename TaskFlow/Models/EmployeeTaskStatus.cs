@@ -13,7 +13,7 @@ namespace TaskFlow.Models
         public string Name { get; set; }
 
         public int DisplayOrder { get; set; }
-
+        public string ColorCode { get; set; } = "#6c757d";
         public bool IsActive { get; set; }
         public bool IsSystem { get; set; }
         public bool IsDefault { get; set; }

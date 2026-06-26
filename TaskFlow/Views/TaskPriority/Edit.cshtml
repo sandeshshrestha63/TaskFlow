@@ -31,41 +31,32 @@
                 </div>
 
                 <div class="row">
-
                     <div class="col-md-8 mb-3">
 
-                        <label asp-for="Name"
-                               class="form-label fw-semibold">
+                        <label asp-for="Name" class="form-label fw-semibold">
                         </label>
+                        <input asp-for="Name" class="form-control" />
 
-                        <input asp-for="Name"
-                               class="form-control" />
-
-                        <span asp-validation-for="Name"
-                              class="text-danger">
+                        <span asp-validation-for="Name" class="text-danger">
                         </span>
 
                     </div>
 
                     <div class="col-md-4 mb-3">
 
-                        <label asp-for="DisplayOrder"
-                               class="form-label fw-semibold">
+                        <label asp-for="DisplayOrder" class="form-label fw-semibold">
                         </label>
 
-                        <input asp-for="DisplayOrder"
-                               class="form-control" />
+                        <input asp-for="DisplayOrder" class="form-control" />
 
                     </div>
 
                 </div>
                 <div class="form-check mb-3">
 
-                    <input asp-for="IsDefault"
-                           class="form-check-input" />
+                    <input asp-for="IsDefault" class="form-check-input" />
 
-                    <label asp-for="IsDefault"
-                           class="form-check-label">
+                    <label asp-for="IsDefault" class="form-check-label">
                         Is Default Priority
                     </label>
 
@@ -80,6 +71,15 @@
                         Active Priority
                     </label>
 
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">
+                        Color
+                    </label>
+
+                    <input asp-for="ColorCode"
+                           type="color"
+                           class="form-control form-control-color" />
                 </div>
 
                 <div class="d-flex gap-2">

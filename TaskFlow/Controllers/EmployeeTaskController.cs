@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
+using System.Threading.Tasks;
+using TaskFlow.Constants;
 using TaskFlow.Data;
 using TaskFlow.Interfaces;
 using TaskFlow.Models;
@@ -11,9 +13,10 @@ namespace TaskFlow.Controllers
 {
     public class EmployeeTaskController : BaseController
     {
-        public EmployeeTaskController(ICurrentUserServices currentUser, AppDbContext db) : base(currentUser, db)
+        private ITaskActivityService _activityService;
+        public EmployeeTaskController(ICurrentUserServices currentUser, ITaskActivityService activityService, AppDbContext db) : base(currentUser, db)
         {
-
+            _activityService = activityService;
         }
         public async Task<IActionResult> Index(string? searchText, int? employeeId, int? statusId, int? priorityId)
         {
@@ -123,6 +126,7 @@ namespace TaskFlow.Controllers
             _db.EmployeeTasks.Add(employeeTask);
 
             await _db.SaveChangesAsync();
+            await _activityService.AddActivityAsync(employeeTask.Id, EmployeeId.Value, TaskActivityTypes.Created, $"Task '{employeeTask.Title}' was created.");
 
             TempData["Success"] = "Task created successfully.";
 
@@ -182,6 +186,10 @@ namespace TaskFlow.Controllers
             if (task == null)
                 return NotFound();
 
+            var oldAssignedEmployeeId = task.AssignedToEmployeeId;
+            var oldPriorityId = task.EmployeeTaskPriorityId;
+            var oldDueDate = task.DueDate;
+
             task.Title = vm.Title;
             task.Description = vm.Description;
             task.AssignedToEmployeeId = vm.AssignedToEmployeeId;
@@ -190,6 +198,21 @@ namespace TaskFlow.Controllers
             task.EstimatedHours = vm.EstimatedHours;
             task.UpdatedDate = DateTime.UtcNow;
             await _db.SaveChangesAsync();
+
+            await _activityService.AddActivityAsync(task.Id, EmployeeId.Value, TaskActivityTypes.Updated, "Task details updated.");
+            if (oldAssignedEmployeeId != vm.AssignedToEmployeeId)
+            {
+                await _activityService.AddActivityAsync(task.Id, EmployeeId.Value, TaskActivityTypes.Assigned, "Task assignment was changed.");
+            }
+            if (oldPriorityId != vm.EmployeeTaskPriorityId)
+            {
+                var oldPriority = await _db.TaskPriorities.Where(x => x.Id == oldPriorityId).Select(x => x.Name).FirstOrDefaultAsync();
+
+                var newPriority = await _db.TaskPriorities.Where(x => x.Id == vm.EmployeeTaskPriorityId).Select(x => x.Name).FirstOrDefaultAsync();
+
+                await _activityService.AddActivityAsync(task.Id, EmployeeId.Value, TaskActivityTypes.PriorityChanged, $"Priority changed from '{oldPriority}' to '{newPriority}'.");
+            }
+
             SuccessMessage("Task updated successfully.");
             return RedirectToAction(nameof(Index));
         }
@@ -225,8 +248,10 @@ namespace TaskFlow.Controllers
                         x.CreatedByEmployee.LastName,
 
                     Priority = x.EmployeeTaskPriority.Name,
+                    PriorityColor = x.EmployeeTaskPriority.ColorCode,
 
                     Status = x.EmployeeTaskStatus.Name,
+                    StatusColor = x.EmployeeTaskStatus.ColorCode,
 
                     DueDate = x.DueDate,
 
@@ -242,7 +267,20 @@ namespace TaskFlow.Controllers
                         EmployeeName = c.CreatedByEmployee.FirstName + " " + c.CreatedByEmployee.LastName,
                         Comment = c.Comment,
                         CreatedDate = c.CreatedDate
-                    }).ToList()
+                    }).ToList(),
+                    Activities = x.Activities.OrderByDescending(a => a.CreatedDate).Select(a => new TaskActivityVM
+                    {
+                        EmployeeName =
+                            a.Employee.FirstName + " " +
+                            a.Employee.LastName,
+
+                        ActivityType = a.ActivityType,
+
+                        Description = a.Description,
+
+                        CreatedDate = a.CreatedDate
+                    })
+                    .ToList()
                 })
                 .FirstOrDefaultAsync();
 
@@ -262,7 +300,7 @@ namespace TaskFlow.Controllers
                 return RedirectToAction(nameof(Details), new { id = vm.TaskId });
 
             var task = await _db.EmployeeTasks
-                .FirstOrDefaultAsync(x =>
+                .FirstOrDefaultAsync(x => 
                     x.Id == vm.TaskId &&
                     x.CompanyId == CompanyId.Value);
 
@@ -298,21 +336,29 @@ namespace TaskFlow.Controllers
             if (task == null)
                 return NotFound();
 
+            var oldStatusId = task.EmployeeTaskStatusId;
+
             task.EmployeeTaskStatusId = vm.StatusId;
             task.UpdatedDate = DateTime.UtcNow;
 
-            var completedStatus = await _db.EmployeeTaskStatus
-                .FirstOrDefaultAsync(x =>
-                    x.Id == vm.StatusId &&
-                    x.CompanyId == CompanyId.Value);
+            var completedStatus = await _db.EmployeeTaskStatus.FirstOrDefaultAsync(x => x.Id == vm.StatusId && x.CompanyId == CompanyId.Value);
 
             if (completedStatus != null &&
                 completedStatus.Name.ToLower() == "completed")
             {
                 task.CompletedDate = DateTime.UtcNow;
             }
-
             await _db.SaveChangesAsync();
+
+            if (oldStatusId != task.EmployeeTaskStatusId)
+            {
+                var oldStatus = await _db.EmployeeTaskStatus.Where(x => x.Id == oldStatusId).Select(x => x.Name).FirstOrDefaultAsync();
+
+                var newStatus = await _db.EmployeeTaskStatus.Where(x => x.Id == vm.StatusId).Select(x => x.Name).FirstOrDefaultAsync();
+
+                await _activityService.AddActivityAsync(task.Id, EmployeeId.Value, TaskActivityTypes.StatusChanged, $"Status changed from '{oldStatus}' to '{newStatus}'.");
+            }
+
 
             SuccessMessage("Task status updated successfully.");
 

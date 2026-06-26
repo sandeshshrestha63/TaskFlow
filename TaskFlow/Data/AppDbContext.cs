@@ -35,6 +35,7 @@ namespace TaskFlow.Data
         public DbSet<EmployeeTaskPriority> TaskPriorities { get; set; }
 
         public DbSet<TaskComment> TaskComments { get; set; }
+        public DbSet<TaskActivity> TaskActivities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -93,6 +94,17 @@ namespace TaskFlow.Data
                 .HasOne(x => x.ApplicationUser)
                 .WithOne()
                 .HasForeignKey<Employee>(x => x.ApplicationUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TaskActivity>()
+                .HasOne(x => x.EmployeeTask)
+                .WithMany(x => x.Activities)
+                .HasForeignKey(x => x.EmployeeTaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskActivity>()
+                .HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

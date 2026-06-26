@@ -1,73 +1,123 @@
 ﻿@model TaskDetailsVM
 
 <div class="container-fluid">
+
     <div class="card shadow-sm border-0">
+
+        <!-- Header -->
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
             <div>
                 <h4 class="mb-0">@Model.Title</h4>
                 <small class="text-muted">
                     Task Details
                 </small>
             </div>
+
             <div class="d-flex gap-2">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-warning">
                     Edit
                 </a>
-                <a asp-action="Index" class="btn btn-outline-secondary">
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary">
                     Back
                 </a>
+
             </div>
+
         </div>
+
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
-                    <h6>Description</h6>
-                    <div class="border rounded p-3 bg-light">
-                        @(string.IsNullOrWhiteSpace(Model.Description)
-                            ? "No description provided."
-                            : Model.Description)
-                    </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+
+                <h5 class="fw-bold mb-3">
+                    Description
+                </h5>
+
+                <div class="border rounded p-4 bg-light">
+
+                    @(string.IsNullOrWhiteSpace(Model.Description)
+                        ? "No description provided."
+                        : Model.Description)
+
                 </div>
-                <div class="col-md-4">
-                    <div class="card border">
+
+            </div>
+
+            <!-- Info Row -->
+            <div class="row g-4 mb-4">
+
+                <!-- Task Information -->
+                <div class="col-lg-6">
+
+                    <div class="card h-100">
+
+                        <div class="card-header">
+                            Task Information
+                        </div>
+
                         <div class="card-body">
-                            <table class="table table-sm">
+
+                            <table class="table table-sm mb-0">
+
                                 <tr>
-                                    <th>Assigned To</th>
+                                    <th width="140">Assigned To</th>
                                     <td>@Model.AssignedTo</td>
                                 </tr>
+
                                 <tr>
                                     <th>Created By</th>
                                     <td>@Model.CreatedBy</td>
                                 </tr>
+
                                 <tr>
                                     <th>Priority</th>
-                                    <td>@Model.Priority</td>
-                                </tr>
-                                <tr>
-                                    <th>Status</th>
-                                    <td>@Model.Status</td>
-                                </tr>
-                                <tr>
-                                    <th>Due Date</th>
                                     <td>
-                                        @Model.DueDate?.ToString("dd MMM yyyy")
+                                        <span class="badge rounded-pill px-3 py-2 fw-semibold"
+                                              style="background-color:@Model.PriorityColor;">
+                                            @Model.Priority
+                                        </span>
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        <span class="badge rounded-pill px-3 py-2 fw-semibold"
+                                              style="background-color:@Model.StatusColor;">
+                                            @Model.Status
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Due Date</th>
+                                    <td>@Model.DueDate?.ToString("dd MMM yyyy")</td>
+                                </tr>
+
                                 <tr>
                                     <th>Estimated Hrs</th>
                                     <td>@Model.EstimatedHours</td>
                                 </tr>
+
                                 <tr>
                                     <th>Actual Hrs</th>
                                     <td>@Model.ActualHours</td>
                                 </tr>
+
                                 <tr>
                                     <th>Created</th>
                                     <td>
                                         @Model.CreatedDate.ToString("dd MMM yyyy")
                                     </td>
                                 </tr>
+
                                 @if (Model.CompletedDate.HasValue)
                                 {
                                     <tr>
@@ -77,81 +127,27 @@
                                         </td>
                                     </tr>
                                 }
+
                             </table>
+
                         </div>
+
                     </div>
-                    <div class="card mt-4">
+
+                </div>
+
+                <!-- Update Status -->
+                <div class="col-lg-6">
+
+                    <div class="card h-100">
+
                         <div class="card-header">
                             Update Status
                         </div>
-                        <div class="card-body">
-                            <form asp-action="UpdateStatus" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="TaskId" value="@Model.Id" />
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <select name="StatusId" class="form-select">
-                                            @foreach (var status in ViewBag.Statuses)
-                                            {
-                                                <option value="@status.Id">
-                                                    @status.Name
-                                                </option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button type="submit"
-                                                class="btn btn-primary w-100">
-                                            Update Status
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="card mt-4">
-
-                        <div class="card-header">
-                            Comments
-                        </div>
 
                         <div class="card-body">
 
-                            @if (Model.Comments.Any())
-                            {
-                                foreach (var comment in Model.Comments)
-                                {
-                                    <div class="border rounded p-3 mb-3">
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <strong>
-                                                @comment.EmployeeName
-                                            </strong>
-
-                                            <small class="text-muted">
-                                                @comment.CreatedDate.ToString("dd MMM yyyy hh:mm tt")
-                                            </small>
-
-                                        </div>
-
-                                        <div class="mt-2">
-                                            @comment.Comment
-                                        </div>
-
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <p class="text-muted">
-                                    No comments available.
-                                </p>
-                            }
-
-                            <hr />
-
-                            <form asp-action="AddComment"
+                            <form asp-action="UpdateStatus"
                                   method="post">
 
                                 @Html.AntiForgeryToken()
@@ -160,27 +156,425 @@
                                        name="TaskId"
                                        value="@Model.Id" />
 
-                                <div class="mb-3">
+                                <div class="row g-2">
 
-                                    <textarea name="Comment"
-                                              rows="4"
-                                              class="form-control"
-                                              placeholder="Write comment..."></textarea>
+                                    <div class="col-md-8">
+
+                                        <select name="StatusId"
+                                                class="form-select">
+
+                                            @foreach (var status in ViewBag.Statuses)
+                                            {
+                                                <option value="@status.Id">
+                                                    @status.Name
+                                                </option>
+                                            }
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="col-md-4">
+
+                                        <button type="submit"
+                                                class="btn btn-primary w-100">
+
+                                            Update
+
+                                        </button>
+
+                                    </div>
 
                                 </div>
-
-                                <button type="submit"
-                                        class="btn btn-success">
-                                    Add Comment
-                                </button>
 
                             </form>
 
                         </div>
 
                     </div>
+
                 </div>
+
             </div>
+
+            <!-- Comments -->
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        Comments
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    @if (Model.Comments.Any())
+                    {
+                        foreach (var comment in Model.Comments)
+                        {
+                            <div class="border rounded p-3 mb-3">
+
+                                <div class="d-flex justify-content-between">
+
+                                    <strong>
+                                        @comment.EmployeeName
+                                    </strong>
+
+                                    <small class="text-muted">
+                                        @comment.CreatedDate.ToString("dd MMM yyyy hh:mm tt")
+                                    </small>
+
+                                </div>
+
+                                <div class="mt-2">
+                                    @comment.Comment
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">
+                            No comments available.
+                        </p>
+                    }
+
+                    <hr />
+
+                    <form asp-action="AddComment"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="TaskId"
+                               value="@Model.Id" />
+
+                        <div class="mb-3">
+
+                            <textarea name="Comment"
+                                      rows="4"
+                                      class="form-control"
+                                      placeholder="Write comment..."></textarea>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-success">
+
+                            Add Comment
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="card shadow-sm border-0 mt-4">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>
+                        Activity Timeline
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    @if (Model.Activities != null &&
+                    Model.Activities.Any())
+                    {
+                        <div class="timeline">
+
+                            @foreach (var item in Model.Activities)
+                            {
+                                <div class="timeline-item">
+
+                                    <div class="timeline-dot"></div>
+
+                                    <div class="timeline-content">
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <strong>
+                                                @item.EmployeeName
+                                            </strong>
+
+                                            <small class="text-muted">
+                                                @item.CreatedDate.ToString("dd MMM yyyy hh:mm tt")
+                                            </small>
+
+                                        </div>
+
+                                        <div class="text-primary fw-semibold small">
+                                            @item.ActivityType
+                                        </div>
+
+                                        <div class="mt-1">
+                                            @item.Description
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            }
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-4">
+
+                            <i class="bi bi-clock-history fs-1"></i>
+
+                            <div class="mt-2">
+                                No activity found.
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
 </div>
+
+<style>
+
+    .timeline {
+        position: relative;
+        margin-left: 10px;
+    }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 40px;
+        margin-bottom: 25px;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: 2px;
+        top: 5px;
+        width: 18px;
+        height: 18px;
+        background: #0d6efd;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 2px #0d6efd;
+    }
+
+    .timeline-content {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 12px 15px;
+    }
+
+</style>
+@* @model TaskDetailsVM *@
+
+@* <div class="container-fluid"> *@
+@*     <div class="card shadow-sm border-0"> *@
+@*         <div class="card-header bg-white d-flex justify-content-between align-items-center"> *@
+@*             <div> *@
+@*                 <h4 class="mb-0">@Model.Title</h4> *@
+@*                 <small class="text-muted"> *@
+@*                     Task Details *@
+@*                 </small> *@
+@*             </div> *@
+@*             <div class="d-flex gap-2"> *@
+@*                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"> *@
+@*                     Edit *@
+@*                 </a> *@
+@*                 <a asp-action="Index" class="btn btn-outline-secondary"> *@
+@*                     Back *@
+@*                 </a> *@
+@*             </div> *@
+@*         </div> *@
+@*         <div class="card-body"> *@
+@*             <div class="row"> *@
+@*                 <div class="col-md-8"> *@
+@*                     <h6>Description</h6> *@
+@*                     <div class="border rounded p-3 bg-light"> *@
+@*                         @(string.IsNullOrWhiteSpace(Model.Description) *@
+@*                             ? "No description provided." *@
+@*                             : Model.Description) *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="col-md-4"> *@
+@*                     <div class="card border"> *@
+@*                         <div class="card-body"> *@
+@*                             <table class="table table-sm"> *@
+@*                                 <tr> *@
+@*                                     <th>Assigned To</th> *@
+@*                                     <td>@Model.AssignedTo</td> *@
+@*                                 </tr> *@
+@*                                 <tr> *@
+@*                                     <th>Created By</th> *@
+@*                                     <td>@Model.CreatedBy</td> *@
+@*                                 </tr> *@
+@*                                 <tr> *@
+@*                                     <th>Priority</th> *@
+@*                                     <td>@Model.Priority</td> *@
+@*                                 </tr> *@
+@*                                 <tr> *@
+@*                                     <th>Status</th> *@
+@*                                     <td>@Model.Status</td> *@
+@*                                 </tr> *@
+@*                                 <tr> *@
+@*                                     <th>Due Date</th> *@
+@*                                     <td> *@
+@*                                         @Model.DueDate?.ToString("dd MMM yyyy") *@
+@*                                     </td> *@
+@*                                 </tr> *@
+@*                                 <tr> *@
+@*                                     <th>Estimated Hrs</th> *@
+@*                                     <td>@Model.EstimatedHours</td> *@
+@*                                 </tr> *@
+@*                                 <tr> *@
+@*                                     <th>Actual Hrs</th> *@
+@*                                     <td>@Model.ActualHours</td> *@
+@*                                 </tr> *@
+@*                                 <tr> *@
+@*                                     <th>Created</th> *@
+@*                                     <td> *@
+@*                                         @Model.CreatedDate.ToString("dd MMM yyyy") *@
+@*                                     </td> *@
+@*                                 </tr> *@
+@*                                 @if (Model.CompletedDate.HasValue) *@
+@*                                 { *@
+@*                                     <tr> *@
+@*                                         <th>Completed</th> *@
+@*                                         <td> *@
+@*                                             @Model.CompletedDate.Value.ToString("dd MMM yyyy") *@
+@*                                         </td> *@
+@*                                     </tr> *@
+@*                                 } *@
+@*                             </table> *@
+@*                         </div> *@
+@*                     </div> *@
+@*                     <div class="card mt-4"> *@
+@*                         <div class="card-header"> *@
+@*                             Update Status *@
+@*                         </div> *@
+@*                         <div class="card-body"> *@
+@*                             <form asp-action="UpdateStatus" method="post"> *@
+@*                                 @Html.AntiForgeryToken() *@
+@*                                 <input type="hidden" name="TaskId" value="@Model.Id" /> *@
+@*                                 <div class="row"> *@
+@*                                     <div class="col-md-8"> *@
+@*                                         <select name="StatusId" class="form-select"> *@
+@*                                             @foreach (var status in ViewBag.Statuses) *@
+@*                                             { *@
+@*                                                 <option value="@status.Id"> *@
+@*                                                     @status.Name *@
+@*                                                 </option> *@
+@*                                             } *@
+@*                                         </select> *@
+@*                                     </div> *@
+@*                                     <div class="col-md-4"> *@
+@*                                         <button type="submit" *@
+@*                                                 class="btn btn-primary w-100"> *@
+@*                                             Update Status *@
+@*                                         </button> *@
+@*                                     </div> *@
+@*                                 </div> *@
+@*                             </form> *@
+@*                         </div> *@
+@*                     </div> *@
+@*                     <div class="card mt-4"> *@
+
+@*                         <div class="card-header"> *@
+@*                             Comments *@
+@*                         </div> *@
+
+@*                         <div class="card-body"> *@
+
+@*                             @if (Model.Comments.Any()) *@
+@*                             { *@
+@*                                 foreach (var comment in Model.Comments) *@
+@*                                 { *@
+@*                                     <div class="border rounded p-3 mb-3"> *@
+
+@*                                         <div class="d-flex justify-content-between"> *@
+
+@*                                             <strong> *@
+@*                                                 @comment.EmployeeName *@
+@*                                             </strong> *@
+
+@*                                             <small class="text-muted"> *@
+@*                                                 @comment.CreatedDate.ToString("dd MMM yyyy hh:mm tt") *@
+@*                                             </small> *@
+
+@*                                         </div> *@
+
+@*                                         <div class="mt-2"> *@
+@*                                             @comment.Comment *@
+@*                                         </div> *@
+
+@*                                     </div> *@
+@*                                 } *@
+@*                             } *@
+@*                             else *@
+@*                             { *@
+@*                                 <p class="text-muted"> *@
+@*                                     No comments available. *@
+@*                                 </p> *@
+@*                             } *@
+
+@*                             <hr /> *@
+
+@*                             <form asp-action="AddComment" *@
+@*                                   method="post"> *@
+
+@*                                 @Html.AntiForgeryToken() *@
+
+@*                                 <input type="hidden" *@
+@*                                        name="TaskId" *@
+@*                                        value="@Model.Id" /> *@
+
+@*                                 <div class="mb-3"> *@
+
+@*                                     <textarea name="Comment" *@
+@*                                               rows="4" *@
+@*                                               class="form-control" *@
+@*                                               placeholder="Write comment..."></textarea> *@
+
+@*                                 </div> *@
+
+@*                                 <button type="submit" *@
+@*                                         class="btn btn-success"> *@
+@*                                     Add Comment *@
+@*                                 </button> *@
+
+@*                             </form> *@
+
+@*                         </div> *@
+
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@

@@ -42,21 +42,21 @@ namespace TaskFlow.Controllers
         {
             var statuses = new List<EmployeeTaskStatus>
             {
-                new() { CompanyId = companyId, Name = "Pending", DisplayOrder = 1, IsActive = true, IsSystem = true, IsDefault = true },
-                new() { CompanyId = companyId, Name = "In Progress", DisplayOrder = 2, IsActive = true, IsSystem = true },
-                new() { CompanyId = companyId, Name = "On Hold", DisplayOrder = 3, IsActive = true, IsSystem = true },
-                new() { CompanyId = companyId, Name = "Completed", DisplayOrder = 4, IsActive = true, IsSystem = true },
-                new() { CompanyId = companyId, Name = "Cancelled", DisplayOrder = 5, IsActive = true, IsSystem = true }
+                new() { CompanyId = companyId, Name = "Pending", DisplayOrder = 1, IsActive = true, IsSystem = true, IsDefault = true, ColorCode ="#6C757D" },
+                new() { CompanyId = companyId, Name = "In Progress", DisplayOrder = 2, IsActive = true, IsSystem = true, ColorCode ="#F59E0B" },
+                new() { CompanyId = companyId, Name = "On Hold", DisplayOrder = 3, IsActive = true, IsSystem = true, ColorCode ="#885E3C" },
+                new() { CompanyId = companyId, Name = "Completed", DisplayOrder = 4, IsActive = true, IsSystem = true, ColorCode ="#198754" },
+                new() { CompanyId = companyId, Name = "Cancelled", DisplayOrder = 5, IsActive = true, IsSystem = true , ColorCode = "#495057"}
             };
 
             _db.EmployeeTaskStatus.AddRange(statuses);
 
             var priorities = new List<EmployeeTaskPriority>
             {
-                new() { CompanyId = companyId, Name = "Low", DisplayOrder = 1, IsDefault = false, IsSystem = true, IsActive = true },
-                new() { CompanyId = companyId,Name = "Medium", DisplayOrder = 2, IsDefault = true, IsSystem = true, IsActive = true },
-                new() { CompanyId = companyId, Name = "High", DisplayOrder = 3, IsDefault = false, IsSystem = true, IsActive = true },
-                new() { CompanyId = companyId, Name = "Critical", DisplayOrder = 4, IsDefault = false, IsSystem = true, IsActive = true }
+                new() { CompanyId = companyId, Name = "Low", DisplayOrder = 1, IsDefault = false, IsSystem = true, IsActive = true, ColorCode ="#198754" },
+                new() { CompanyId = companyId,Name = "Medium", DisplayOrder = 2, IsDefault = true, IsSystem = true, IsActive = true, ColorCode ="#FFC107" },
+                new() { CompanyId = companyId, Name = "High", DisplayOrder = 3, IsDefault = false, IsSystem = true, IsActive = true,ColorCode ="#FD7E14" },
+                new() { CompanyId = companyId, Name = "Critical", DisplayOrder = 4, IsDefault = false, IsSystem = true, IsActive = true,ColorCode ="#DC3545" }
             };
 
             _db.TaskPriorities.AddRange(priorities);

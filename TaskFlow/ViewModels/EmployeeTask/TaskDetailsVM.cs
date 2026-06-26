@@ -14,9 +14,13 @@
         public decimal? ActualHours { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? CompletedDate { get; set; }
+        public string PriorityColor { get; set; }
+        public string StatusColor { get; set; }
+
         public List<TaskCommentListVM> Comments { get; set; } = new();
         public TaskCommentVM NewComment { get; set; } = new();
         public UpdateTaskStatusVM StatusUpdate { get; set; } = new();
+        public List<TaskActivityVM> Activities { get; set; } = new();
     }
     public class TaskCommentListVM
     {
@@ -28,5 +32,15 @@
     {
         public long TaskId { get; set; }
         public int StatusId { get; set; }
+    }
+    public class TaskActivityVM
+    {
+        public string EmployeeName { get; set; }
+
+        public string ActivityType { get; set; }
+
+        public string Description { get; set; }
+
+        public DateTime CreatedDate { get; set; }
     }
 }

@@ -48,7 +48,8 @@ namespace TaskFlow.Controllers
                 DisplayOrder = vm.DisplayOrder,
                 IsDefault = vm.IsDefault,
                 IsSystem = false,
-                IsActive = vm.IsActive
+                IsActive = vm.IsActive,
+                ColorCode = vm.ColorCode
             };
 
             _db.EmployeeTaskStatus.Add(status);
@@ -82,7 +83,8 @@ namespace TaskFlow.Controllers
                 Id = status.Id,
                 Name = status.Name,
                 DisplayOrder = status.DisplayOrder,
-                IsActive = status.IsActive
+                IsActive = status.IsActive,
+                ColorCode = status.ColorCode
             };
 
             return View(vm);
@@ -145,6 +147,7 @@ namespace TaskFlow.Controllers
             status.DisplayOrder = vm.DisplayOrder;
             status.IsActive = vm.IsActive;
             status.IsDefault = vm.IsDefault;
+            status.ColorCode = vm.ColorCode;
 
             await _db.SaveChangesAsync();
 
