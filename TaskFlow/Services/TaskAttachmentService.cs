@@ -38,7 +38,7 @@ namespace TaskFlow.Services
 
             string uploadFolder = GetUploadFolder(request.CompanyId, request.TaskId);
 
-            List<EmployeeTaskAttachment> attachments = new();
+            var attachments = new List<EmployeeTaskAttachment>();
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -130,42 +130,32 @@ namespace TaskFlow.Services
                     $"'{file.FileName}' exceeds the maximum allowed size of {_settings.MaxFileSizeMB} MB.");
             }
         }
+        private string GetStorageRoot()
+        {
+            string root = Path.Combine(_environment.ContentRootPath, _settings.StorageRoot);
+
+            Directory.CreateDirectory(root);
+
+            return root;
+        }
 
         private string GetUploadFolder(long companyId, long taskId)
         {
-            string folder = Path.Combine(
-                _environment.WebRootPath,
-                "uploads",
-                "companies",
-                companyId.ToString(),
-                "tasks",
-                taskId.ToString());
+            string folder = Path.Combine(GetStorageRoot(), "companies", companyId.ToString(), "tasks", taskId.ToString());
 
             Directory.CreateDirectory(folder);
 
             return folder;
         }
-
-        private string GetRelativePath(
-            long companyId,
-            long taskId,
-            string storedFileName)
+       
+        private string GetRelativePath(long companyId, long taskId, string storedFileName)
         {
-            return Path.Combine(
-                "uploads",
-                "companies",
-                companyId.ToString(),
-                "tasks",
-                taskId.ToString(),
-                storedFileName)
-                .Replace("\\", "/");
+            return Path.Combine("companies", companyId.ToString(), "tasks", taskId.ToString(), storedFileName).Replace("\\", "/");
         }
 
         private string GetPhysicalPath(string relativePath)
         {
-            return Path.Combine(
-                _environment.WebRootPath,
-                relativePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+            return Path.Combine(GetStorageRoot(), relativePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
         }
 
         private void DeleteUploadedFiles(IEnumerable<EmployeeTaskAttachment> attachments)
@@ -246,6 +236,8 @@ namespace TaskFlow.Services
             return attachment;
         }
 
+        
+       
         #endregion
     }
 }
