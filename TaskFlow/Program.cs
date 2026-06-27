@@ -94,6 +94,8 @@ builder.Services.AddScoped<ICurrentUserServices, CurrentUserServices>();
 builder.Services.AddScoped<ITaskActivityService,TaskActivityService>();
 builder.Services.AddScoped<ITaskAttachmentService, TaskAttachmentService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+
 
 builder.Services.AddScoped<EmployeeService>();
 var app = builder.Build();

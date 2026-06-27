@@ -1,0 +1,157 @@
+﻿@model TaskFlow.ViewModels.Dashboard.EmployeeDashboardVM
+
+@{
+    string greeting;
+
+    if (DateTime.Now.Hour < 12)
+    {
+        greeting = "Good Morning";
+    }
+    else if (DateTime.Now.Hour < 17)
+    {
+        greeting = "Good Afternoon";
+    }
+    else
+    {
+        greeting = "Good Evening";
+    }
+}
+
+<div class="greeting-card">
+
+    <div class="greeting-content">
+
+        <div class="row align-items-center">
+
+            <!-- Left -->
+            <div class="col-lg-8">
+
+                <div class="d-flex align-items-center mb-4">
+
+                    <div class="me-3">
+
+                        <div class="icon-circle bg-white text-primary">
+
+                            <i class="bi bi-sun-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <h2 class="greeting-title mb-1">
+                            @greeting 👋
+                        </h2>
+
+                        <div class="greeting-subtitle">
+
+                            Welcome back! Here's an overview of your work for today.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="greeting-meta">
+
+                    <div class="greeting-meta-item">
+
+                        <i class="bi bi-calendar-event"></i>
+
+                        <span>
+                            @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+                        </span>
+
+                    </div>
+
+                    <div class="greeting-meta-item">
+
+                        <i class="bi bi-check2-circle"></i>
+
+                        <span>
+
+                            @Model.CompletedToday completed today
+
+                        </span>
+
+                    </div>
+
+                    <div class="greeting-meta-item">
+
+                        <i class="bi bi-list-task"></i>
+
+                        <span>
+
+                            @Model.TotalDueToday task(s) due today
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Right -->
+
+            <div class="col-lg-4 mt-4 mt-lg-0">
+
+                <div class="greeting-summary">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <span class="fw-semibold">
+
+                            Today's Progress
+
+                        </span>
+
+                        <span class="greeting-summary-value">
+
+                            @Model.CompletionPercentage%
+
+                        </span>
+
+                    </div>
+
+                    <div class="tf-progress tf-progress-lg mb-3">
+
+                        <div class="tf-progress-bar"
+                             style="width:@Model.CompletionPercentage%;">
+                        </div>
+
+                    </div>
+
+                    <div class="small text-white-50">
+
+                        You have completed
+
+                        <strong class="text-white">
+
+                            @Model.CompletedToday
+
+                        </strong>
+
+                        out of
+
+                        <strong class="text-white">
+
+                            @Model.TotalDueToday
+
+                        </strong>
+
+                        assigned task(s) today.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

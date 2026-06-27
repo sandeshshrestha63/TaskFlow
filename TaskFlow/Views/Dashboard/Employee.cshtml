@@ -1,27 +1,91 @@
-﻿@{
-    ViewData["Title"] = "My Dashboard";
+﻿@model TaskFlow.ViewModels.Dashboard.EmployeeDashboardVM
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<h2 class="mb-4">My Tasks Overview</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+}
 
-<div class="row">
 
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5>Total Tasks</h5>
-                <h2>@ViewBag.TotalTasks</h2>
+<div class="dashboard-wrapper">
+
+    <div class="container-fluid">
+
+        <!-- Greeting -->
+        <section class="dashboard-section">
+            <partial name="~/Views/Shared/Dashboard/_GreetingCard.cshtml" />
+        </section>
+
+        <!-- Statistics -->
+        <section class="dashboard-section">
+            <partial name="~/Views/Shared/Dashboard/_StatisticsCards.cshtml"
+                     model="Model" />
+        </section>
+
+        <!-- Focus Task + Upcoming -->
+        <section class="dashboard-section">
+
+            <div class="row g-4">
+
+                <div class="col-12 col-xl-8 d-flex">
+
+                    <div class="dashboard-widget flex-fill">
+
+                        <partial name="~/Views/Shared/Dashboard/_FocusTask.cshtml"
+                                 model="Model.FocusTask" />
+
+                    </div>
+
+                </div>
+
+                <div class="col-12 col-xl-4 d-flex">
+
+                    <div class="dashboard-widget flex-fill">
+
+                        <partial name="~/Views/Shared/Dashboard/_UpcomingDeadlines.cshtml"
+                                 model="Model.UpcomingTasks" />
+
+                    </div>
+
+                </div>
+
             </div>
-        </div>
-    </div>
 
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5>Pending Tasks</h5>
-                <h2>@ViewBag.PendingTasks</h2>
+        </section>
+
+        <!-- Priority Tasks + Recent Activity -->
+        <section class="dashboard-section">
+
+            <div class="row g-4">
+
+                <div class="col-12 col-xl-8 d-flex">
+
+                    <div class="dashboard-widget flex-fill">
+
+                        <partial name="~/Views/Shared/Dashboard/_PriorityTasks.cshtml"
+                                 model="Model.MyTaskList" />
+
+                    </div>
+
+                </div>
+
+                <div class="col-12 col-xl-4 d-flex">
+
+                    <div class="dashboard-widget flex-fill">
+
+                        <partial name="~/Views/Shared/Dashboard/_RecentActivity.cshtml"
+                                 model="Model.RecentActivities" />
+
+                    </div>
+
+                </div>
+
             </div>
-        </div>
+
+        </section>
+
     </div>
 
 </div>

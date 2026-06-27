@@ -1,0 +1,171 @@
+﻿@model List<TaskFlow.ViewModels.Dashboard.EmployeeTaskSummaryVM>
+
+<div class="dashboard-card h-100">
+
+    <div class="dashboard-card-header">
+
+        <div>
+
+            <h5 class="dashboard-card-title mb-1">
+
+                <i class="bi bi-calendar-event text-primary me-2"></i>
+
+                Upcoming Deadlines
+
+            </h5>
+
+            <div class="dashboard-card-subtitle">
+
+                Tasks that require your attention soon
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card-body">
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="deadline-list">
+
+                @foreach (var task in Model)
+                {
+                    var dueDate = task.DueDate?.Date ?? DateTime.Today;
+                    var today = DateTime.Today;
+
+                    var daysRemaining = (dueDate - today).Days;
+
+                    string label;
+                    string dayClass;
+
+                    if (daysRemaining < 0)
+                    {
+                        label = "Overdue";
+                        dayClass = "days-red";
+                    }
+                    else if (daysRemaining == 0)
+                    {
+                        label = "Today";
+                        dayClass = "days-red";
+                    }
+                    else if (daysRemaining == 1)
+                    {
+                        label = "Tomorrow";
+                        dayClass = "days-yellow";
+                    }
+                    else if (daysRemaining <= 3)
+                    {
+                        label = $"{daysRemaining} Days";
+                        dayClass = "days-yellow";
+                    }
+                    else
+                    {
+                        label = dueDate.ToString("dd MMM");
+                        dayClass = "days-green";
+                    }
+
+                    string priorityClass = "badge-low";
+
+                    switch ((task.Priority ?? "").ToLower())
+                    {
+                        case "high":
+                        case "critical":
+                            priorityClass = "badge-high";
+                            break;
+
+                        case "medium":
+                            priorityClass = "badge-medium";
+                            break;
+
+                        default:
+                            priorityClass = "badge-low";
+                            break;
+                    }
+
+                    <div class="deadline-item">
+
+                        <div class="deadline-icon">
+
+                            <i class="bi bi-calendar2-check"></i>
+
+                        </div>
+
+                        <div class="deadline-content">
+
+                            <div class="deadline-title">
+
+                                <a asp-controller="EmployeeTask"
+                                   asp-action="Details"
+                                   asp-route-id="@task.Id"
+                                   class="text-decoration-none text-dark">
+
+                                    @task.Title
+
+                                </a>
+
+                            </div>
+
+                            <div class="deadline-date">
+
+                                Due:
+                                @dueDate.ToString("dddd, dd MMM yyyy")
+
+                            </div>
+
+                            <div class="mt-2">
+
+                                <span class="tf-badge @priorityClass">
+
+                                    @task.Priority
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="deadline-right">
+
+                            <span class="days-left @dayClass">
+
+                                @label
+
+                            </span>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+
+                <div class="empty-state-icon">
+
+                    <i class="bi bi-calendar-check"></i>
+
+                </div>
+
+                <div class="empty-state-title">
+
+                    No Upcoming Deadlines
+
+                </div>
+
+                <div class="empty-state-text">
+
+                    Great work! You don't have any upcoming task deadlines.
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

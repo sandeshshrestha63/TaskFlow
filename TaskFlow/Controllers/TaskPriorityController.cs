@@ -28,7 +28,7 @@ namespace TaskFlow.Controllers
         {
             if (!ModelState.IsValid)
                 return View(vm);
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
             if (vm.IsDefault)
             {
                 var existingDefaults = await _db.TaskPriorities.Where(x => x.CompanyId == companyId).ToListAsync();
@@ -51,7 +51,7 @@ namespace TaskFlow.Controllers
         }
         public async Task<IActionResult> Edit(int id)
         {
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
             var priority = await _db.TaskPriorities.FirstOrDefaultAsync(x => x.Id == id && x.CompanyId == companyId);
             if (priority == null)
                 return NotFound();
@@ -77,7 +77,7 @@ namespace TaskFlow.Controllers
         {
             if (!ModelState.IsValid)
                 return View(vm);
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
             var priority = await _db.TaskPriorities.FirstOrDefaultAsync(x => x.Id == vm.Id && x.CompanyId == companyId);
             if (priority == null)
                 return NotFound();
@@ -132,7 +132,7 @@ namespace TaskFlow.Controllers
         [ValidateAntiForgeryToken] 
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var companyId = CompanyId.Value; 
+            var companyId = CompanyId; 
             var priority = await _db.TaskPriorities.FirstOrDefaultAsync(x => x.Id == id && x.CompanyId == companyId); 
             if(priority == null) 
                 return NotFound(); 

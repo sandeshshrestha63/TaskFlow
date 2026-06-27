@@ -1,0 +1,216 @@
+﻿@model List<TaskFlow.ViewModels.Dashboard.EmployeeTaskSummaryVM>
+
+<div class="dashboard-card h-100">
+
+    <div class="dashboard-card-header">
+
+        <div>
+
+            <h5 class="dashboard-card-title mb-1">
+
+                <i class="bi bi-list-check text-primary me-2"></i>
+
+                My Priority Tasks
+
+            </h5>
+
+            <div class="dashboard-card-subtitle">
+
+                Tasks requiring your immediate attention
+
+            </div>
+
+        </div>
+
+        <span class="tf-badge badge-progress">
+
+            @(Model?.Count ?? 0) Task(s)
+
+        </span>
+
+    </div>
+
+    <div class="dashboard-card-body p-0">
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+
+                <table class="task-table mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Task</th>
+
+                            <th>Status</th>
+
+                            <th>Priority</th>
+
+                            <th>Due Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var task in Model)
+                        {
+                            string priorityClass = "badge-low";
+
+                            switch ((task.Priority ?? "").ToLower())
+                            {
+                                case "high":
+                                case "critical":
+                                    priorityClass = "badge-high";
+                                    break;
+
+                                case "medium":
+                                    priorityClass = "badge-medium";
+                                    break;
+
+                                default:
+                                    priorityClass = "badge-low";
+                                    break;
+                            }
+
+                            string statusClass = "badge-progress";
+                            string dotClass = "status-info";
+
+                            switch ((task.Status ?? "").ToLower())
+                            {
+                                case "completed":
+                                    statusClass = "badge-completed";
+                                    dotClass = "status-success";
+                                    break;
+
+                                case "pending":
+                                    statusClass = "badge-pending";
+                                    dotClass = "status-warning";
+                                    break;
+
+                                case "overdue":
+                                    statusClass = "badge-overdue";
+                                    dotClass = "status-danger";
+                                    break;
+
+                                default:
+                                    statusClass = "badge-progress";
+                                    dotClass = "status-info";
+                                    break;
+                            }
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="task-name">
+
+                                        <a asp-controller="EmployeeTask"
+                                           asp-action="Details"
+                                           asp-route-id="@task.Id"
+                                           class="text-decoration-none text-dark">
+
+                                            @task.Title
+
+                                        </a>
+
+                                    </div>
+
+                                    @if (task.IsOverdue)
+                                    {
+                                        <div class="small text-danger mt-1">
+
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+
+                                            Overdue
+
+                                        </div>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    <span class="tf-badge @statusClass">
+
+                                        <span class="status-dot @dotClass"></span>
+
+                                        @task.Status
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="tf-badge @priorityClass">
+
+                                        @task.Priority
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    @if (task.DueDate.HasValue)
+                                    {
+                                        <span class="date-chip">
+
+                                            <i class="bi bi-calendar3"></i>
+
+                                            @task.DueDate.Value.ToString("dd MMM yyyy")
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+
+                                            —
+
+                                        </span>
+                                    }
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+
+                <div class="empty-state-icon">
+
+                    <i class="bi bi-check2-circle"></i>
+
+                </div>
+
+                <div class="empty-state-title">
+
+                    You're All Caught Up!
+
+                </div>
+
+                <div class="empty-state-text">
+
+                    There are currently no priority tasks assigned to you.
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

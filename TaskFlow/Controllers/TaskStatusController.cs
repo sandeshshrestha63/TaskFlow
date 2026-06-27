@@ -30,7 +30,7 @@ namespace TaskFlow.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
 
             if (vm.IsDefault)
             {
@@ -62,7 +62,7 @@ namespace TaskFlow.Controllers
         }
         public async Task<IActionResult> Edit(int id)
         {
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
 
             var status = await _db.EmployeeTaskStatus
                 .FirstOrDefaultAsync(x =>
@@ -97,7 +97,7 @@ namespace TaskFlow.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
 
             var status = await _db.EmployeeTaskStatus
                 .FirstOrDefaultAsync(x =>
@@ -188,7 +188,7 @@ namespace TaskFlow.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
             var status = await _db.EmployeeTaskStatus.FirstOrDefaultAsync(x => x.Id == id && x.CompanyId == companyId);
             if (status == null)
                 return NotFound();

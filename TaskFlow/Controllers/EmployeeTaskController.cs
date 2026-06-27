@@ -30,7 +30,7 @@ namespace TaskFlow.Controllers
         }
         public async Task<IActionResult> Index(string? searchText, int? employeeId, int? statusId, int? priorityId)
         {
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
 
             var query = _db.EmployeeTasks.Include(x => x.AssignedToEmployee)
                             .Include(x => x.EmployeeTaskStatus)
@@ -101,7 +101,7 @@ namespace TaskFlow.Controllers
                 return View(vm);
             }
 
-            var defaultStatus = await _db.EmployeeTaskStatus.Where(x => x.CompanyId == CompanyId.Value && x.IsDefault && x.IsActive).FirstOrDefaultAsync();
+            var defaultStatus = await _db.EmployeeTaskStatus.Where(x => x.CompanyId == CompanyId && x.IsDefault && x.IsActive).FirstOrDefaultAsync();
 
             if (defaultStatus == null)
             {
@@ -114,9 +114,9 @@ namespace TaskFlow.Controllers
                 Title = vm.Title,
                 Description = vm.Description,
 
-                CompanyId = CompanyId.Value,
+                CompanyId = CompanyId,
 
-                CreatedByEmployeeId = EmployeeId.Value,
+                CreatedByEmployeeId = EmployeeId,
 
                 AssignedToEmployeeId = vm.AssignedToEmployeeId,
 
@@ -136,7 +136,7 @@ namespace TaskFlow.Controllers
             _db.EmployeeTasks.Add(employeeTask);
 
             await _db.SaveChangesAsync();
-            await _activityService.AddActivityAsync(employeeTask.Id, EmployeeId.Value, TaskActivityTypes.Created, $"Task '{employeeTask.Title}' was created.");
+            await _activityService.AddActivityAsync(employeeTask.Id, EmployeeId, TaskActivityTypes.Created, $"Task '{employeeTask.Title}' was created.");
 
             TempData["Success"] = "Task created successfully.";
 
@@ -145,7 +145,7 @@ namespace TaskFlow.Controllers
 
         private async Task LoadDropdowns()
         {
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
 
             ViewBag.Employees = await _db.Employees.Where(x => x.CompanyId == companyId).OrderBy(x => x.FirstName)
                                             .ToListAsync();
@@ -154,7 +154,7 @@ namespace TaskFlow.Controllers
         }
         public async Task<IActionResult> Edit(long id)
         {
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
 
             var task = await _db.EmployeeTasks
                 .FirstOrDefaultAsync(x =>
@@ -189,7 +189,7 @@ namespace TaskFlow.Controllers
                 await LoadDropdowns();
                 return View(vm);
             }
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
 
             var task = await _db.EmployeeTasks.FirstOrDefaultAsync(x => x.Id == vm.Id && x.CompanyId == companyId && !x.IsDeleted);
 
@@ -209,10 +209,10 @@ namespace TaskFlow.Controllers
             task.UpdatedDate = DateTime.UtcNow;
             await _db.SaveChangesAsync();
 
-            await _activityService.AddActivityAsync(task.Id, EmployeeId.Value, TaskActivityTypes.Updated, "Task details updated.");
+            await _activityService.AddActivityAsync(task.Id, EmployeeId, TaskActivityTypes.Updated, "Task details updated.");
             if (oldAssignedEmployeeId != vm.AssignedToEmployeeId)
             {
-                await _activityService.AddActivityAsync(task.Id, EmployeeId.Value, TaskActivityTypes.Assigned, "Task assignment was changed.");
+                await _activityService.AddActivityAsync(task.Id, EmployeeId, TaskActivityTypes.Assigned, "Task assignment was changed.");
             }
             if (oldPriorityId != vm.EmployeeTaskPriorityId)
             {
@@ -220,7 +220,7 @@ namespace TaskFlow.Controllers
 
                 var newPriority = await _db.TaskPriorities.Where(x => x.Id == vm.EmployeeTaskPriorityId).Select(x => x.Name).FirstOrDefaultAsync();
 
-                await _activityService.AddActivityAsync(task.Id, EmployeeId.Value, TaskActivityTypes.PriorityChanged, $"Priority changed from '{oldPriority}' to '{newPriority}'.");
+                await _activityService.AddActivityAsync(task.Id, EmployeeId, TaskActivityTypes.PriorityChanged, $"Priority changed from '{oldPriority}' to '{newPriority}'.");
             }
 
             SuccessMessage("Task updated successfully.");
@@ -228,7 +228,7 @@ namespace TaskFlow.Controllers
         }
         public async Task<IActionResult> Details(long id)
         {
-            var companyId = CompanyId.Value;
+            var companyId = CompanyId;
 
             var task = await _db.EmployeeTasks
                 .Include(x => x.AssignedToEmployee)
@@ -297,9 +297,9 @@ namespace TaskFlow.Controllers
             if (task == null)
                 return NotFound();
 
-            task.Attachments = await _taskAttachmentService.GetTaskAttachmentsAsync(id, CompanyId.Value);
+            task.Attachments = await _taskAttachmentService.GetTaskAttachmentsAsync(id, CompanyId);
 
-            ViewBag.Statuses = await _db.EmployeeTaskStatus.Where(x => x.CompanyId == CompanyId.Value && x.IsActive)
+            ViewBag.Statuses = await _db.EmployeeTaskStatus.Where(x => x.CompanyId == CompanyId && x.IsActive)
                                     .OrderBy(x => x.DisplayOrder).ToListAsync();
 
             return View(task);
@@ -315,7 +315,7 @@ namespace TaskFlow.Controllers
             var task = await _db.EmployeeTasks
                 .FirstOrDefaultAsync(x => 
                     x.Id == vm.TaskId &&
-                    x.CompanyId == CompanyId.Value);
+                    x.CompanyId == CompanyId);
 
             if (task == null)
                 return NotFound();
@@ -323,7 +323,7 @@ namespace TaskFlow.Controllers
             var comment = new TaskComment
             {
                 EmployeeTaskId = vm.TaskId,
-                CreatedByEmployeeId = EmployeeId.Value,
+                CreatedByEmployeeId = EmployeeId,
                 Comment = vm.Comment,
                 CreatedDate = DateTime.UtcNow
             };
@@ -346,14 +346,14 @@ namespace TaskFlow.Controllers
 
             try
             {
-                request.CompanyId = CompanyId.Value;
-                request.EmployeeId = EmployeeId.Value;
+                request.CompanyId = CompanyId;
+                request.EmployeeId = EmployeeId;
 
                 var attachments = await _taskAttachmentService.UploadAsync(request);
 
                 await _activityService.AddActivityAsync(
                     request.TaskId,
-                    EmployeeId.Value,
+                    EmployeeId,
                     TaskActivityTypes.AttachmentUploaded,
                     $"Uploaded {attachments.Count} attachment(s).");
 
@@ -380,7 +380,7 @@ namespace TaskFlow.Controllers
                     new DownloadAttachmentRequest
                     {
                         AttachmentId = attachmentId,
-                        CompanyId = CompanyId.Value
+                        CompanyId = CompanyId
                     });
 
                 return File(
@@ -408,15 +408,15 @@ namespace TaskFlow.Controllers
             {
                 var attachment = await _taskAttachmentService.GetAttachmentAsync(
                     request.AttachmentId,
-                    CompanyId.Value);
+                    CompanyId);
 
-                request.CompanyId = CompanyId.Value;
+                request.CompanyId = CompanyId;
 
                 await _taskAttachmentService.DeleteAsync(request);
 
                 await _activityService.AddActivityAsync(
                     attachment.EmployeeTaskId,
-                    EmployeeId.Value,
+                    EmployeeId,
                     TaskActivityTypes.AttachmentDeleted,
                     $"Deleted attachment '{attachment.OriginalFileName}'.");
 
@@ -446,7 +446,7 @@ namespace TaskFlow.Controllers
             var task = await _db.EmployeeTasks
                 .FirstOrDefaultAsync(x =>
                     x.Id == vm.TaskId &&
-                    x.CompanyId == CompanyId.Value);
+                    x.CompanyId == CompanyId);
 
             if (task == null)
                 return NotFound();
@@ -456,7 +456,7 @@ namespace TaskFlow.Controllers
             task.EmployeeTaskStatusId = vm.StatusId;
             task.UpdatedDate = DateTime.UtcNow;
 
-            var completedStatus = await _db.EmployeeTaskStatus.FirstOrDefaultAsync(x => x.Id == vm.StatusId && x.CompanyId == CompanyId.Value);
+            var completedStatus = await _db.EmployeeTaskStatus.FirstOrDefaultAsync(x => x.Id == vm.StatusId && x.CompanyId == CompanyId);
 
             if (completedStatus != null &&
                 completedStatus.Name.ToLower() == "completed")
@@ -471,7 +471,7 @@ namespace TaskFlow.Controllers
 
                 var newStatus = await _db.EmployeeTaskStatus.Where(x => x.Id == vm.StatusId).Select(x => x.Name).FirstOrDefaultAsync();
 
-                await _activityService.AddActivityAsync(task.Id, EmployeeId.Value, TaskActivityTypes.StatusChanged, $"Status changed from '{oldStatus}' to '{newStatus}'.");
+                await _activityService.AddActivityAsync(task.Id, EmployeeId, TaskActivityTypes.StatusChanged, $"Status changed from '{oldStatus}' to '{newStatus}'.");
             }
 
 

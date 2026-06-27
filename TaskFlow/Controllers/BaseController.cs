@@ -16,10 +16,10 @@ namespace TaskFlow.Controllers
             _db = db;
         }
 
-        protected int? CompanyId => CurrentUser.CompanyId;
+        protected int CompanyId => CurrentUser.CompanyId;
 
         protected string? UserId => CurrentUser.UserId;
-        protected int? EmployeeId => CurrentUser.EmployeeId;
+        protected int EmployeeId => CurrentUser.EmployeeId;
 
         protected string? UserEmail => CurrentUser.Email;
 

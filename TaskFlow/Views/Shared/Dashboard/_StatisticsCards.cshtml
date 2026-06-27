@@ -1,0 +1,161 @@
+﻿@model TaskFlow.ViewModels.Dashboard.EmployeeDashboardVM
+
+<div class="stats-grid">
+
+    <!-- My Tasks -->
+    <div class="stat-card stat-primary">
+
+        <div class="stat-content">
+
+            <div class="stat-title">
+                My Tasks
+            </div>
+
+            <div class="stat-value">
+                @Model.MyTasks
+            </div>
+
+            <div class="stat-footer">
+
+                <span class="trend-neutral">
+
+                    <i class="bi bi-list-task"></i>
+
+                    Assigned Tasks
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="stat-icon">
+
+            <i class="bi bi-list-check"></i>
+
+        </div>
+
+    </div>
+
+    <!-- In Progress -->
+
+    <div class="stat-card stat-success">
+
+        <div class="stat-content">
+
+            <div class="stat-title">
+                In Progress
+            </div>
+
+            <div class="stat-value">
+                @Model.InProgressTasks
+            </div>
+
+            <div class="stat-footer">
+
+                <span class="trend-up">
+
+                    <i class="bi bi-arrow-repeat"></i>
+
+                    Currently Active
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="stat-icon">
+
+            <i class="bi bi-play-circle-fill"></i>
+
+        </div>
+
+    </div>
+
+    <!-- Due Today -->
+
+    <div class="stat-card stat-warning">
+
+        <div class="stat-content">
+
+            <div class="stat-title">
+                Due Today
+            </div>
+
+            <div class="stat-value">
+                @Model.DueToday
+            </div>
+
+            <div class="stat-footer">
+
+                <span class="trend-neutral">
+
+                    <i class="bi bi-calendar-event"></i>
+
+                    Requires Attention
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="stat-icon">
+
+            <i class="bi bi-calendar2-check-fill"></i>
+
+        </div>
+
+    </div>
+
+    <!-- Overdue -->
+
+    <div class="stat-card stat-danger">
+
+        <div class="stat-content">
+
+            <div class="stat-title">
+                Overdue
+            </div>
+
+            <div class="stat-value">
+                @Model.OverdueTasks
+            </div>
+
+            <div class="stat-footer">
+
+                @if (Model.OverdueTasks > 0)
+                {
+                    <span class="trend-down">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        Needs Immediate Attention
+
+                    </span>
+                }
+                else
+                {
+                    <span class="trend-up">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        All Caught Up
+
+                    </span>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="stat-icon">
+
+            <i class="bi bi-alarm-fill"></i>
+
+        </div>
+
+    </div>
+
+</div>
