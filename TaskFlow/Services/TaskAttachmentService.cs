@@ -122,6 +122,7 @@ namespace TaskFlow.Services
                     $"Files with the '{extension}' extension are not allowed.");
             }
 
+
             long maxSize = _settings.MaxFileSizeMB * 1024L * 1024L;
 
             if (file.Length > maxSize)
