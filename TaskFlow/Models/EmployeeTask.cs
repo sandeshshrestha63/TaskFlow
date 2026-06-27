@@ -56,5 +56,6 @@ namespace TaskFlow.Models
 
         public ICollection<TaskComment> Comments { get; set; } = new List<TaskComment>();
         public ICollection<TaskActivity> Activities { get; set; } = new List<TaskActivity>();
+        public ICollection<EmployeeTaskAttachment> Attachments { get; set; } = new List<EmployeeTaskAttachment>();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace TaskFlow.ViewModels.EmployeeTask
+﻿using TaskFlow.Models;
+
+namespace TaskFlow.ViewModels.EmployeeTask
 {
     public class TaskDetailsVM
     {
@@ -21,6 +23,7 @@
         public TaskCommentVM NewComment { get; set; } = new();
         public UpdateTaskStatusVM StatusUpdate { get; set; } = new();
         public List<TaskActivityVM> Activities { get; set; } = new();
+        public List<EmployeeTaskAttachment> Attachments { get; set; } = new();
     }
     public class TaskCommentListVM
     {

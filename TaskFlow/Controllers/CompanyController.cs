@@ -12,16 +12,16 @@ namespace TaskFlow.Controllers
     [Authorize(Policy = Policies.SuperAdminOnly)]
     public class CompanyController : BaseController
     {
-        private readonly CompanyService _companyService;
+        private readonly ICompanyService _companyService;
 
-        public CompanyController(AppDbContext context, ICurrentUserServices currentUser, CompanyService companyService) : base(currentUser, context)
+        public CompanyController(AppDbContext context, ICurrentUserServices currentUser, ICompanyService companyService) : base(currentUser, context)
         {
             _companyService = companyService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var companies = _companyService.GetAllCompanies();
+            var companies = await _companyService.GetAllCompaniesAsync();
             return View(companies);
         }
 
@@ -33,7 +33,7 @@ namespace TaskFlow.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Company company)
         {
-            Company data = _companyService.AddCompany(company);
+            Company data = await _companyService.AddCompanyAsyc(company);
             await CreateDefaultTaskStatuses(data.Id);
             TempData["success"] = "Company saved successfully!";
             return RedirectToAction("Index");
@@ -64,28 +64,28 @@ namespace TaskFlow.Controllers
             await _db.SaveChangesAsync();
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var company = _companyService.GetCompanyById(id);
+            var company = await _companyService.GetCompanyByIdAsync(id);
             return View(company);
         }
 
         [HttpPost]
-        public IActionResult Edit(Company company)
+        public async Task<IActionResult> Edit(Company company)
         {
-            var existingCompany = _companyService.GetCompanyById(company.Id);
+            var existingCompany = await _companyService.GetCompanyByIdAsync(company.Id);
             if (existingCompany == null)
             {
                 return NotFound();
             }
-            _companyService.UpdateCompany(company);
+            await _companyService.UpdateCompanyAsync(company);
             TempData["success"] = "Company updated successfully!";
             return RedirectToAction("Index");
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _companyService.DeleteCompany(id);
+            await _companyService.DeleteCompanyAsync(id);
             TempData["success"] = "Company deleted successfully!";
             return RedirectToAction("Index");
         }

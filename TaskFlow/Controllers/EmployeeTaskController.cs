@@ -8,15 +8,25 @@ using TaskFlow.Interfaces;
 using TaskFlow.Models;
 using TaskFlow.ViewModels;
 using TaskFlow.ViewModels.EmployeeTask;
+using TaskFlow.Exceptions;
+using TaskFlow.Services;
+using TaskFlow.ViewModels.Requests.Attachments;
 
 namespace TaskFlow.Controllers
 {
     public class EmployeeTaskController : BaseController
     {
         private ITaskActivityService _activityService;
-        public EmployeeTaskController(ICurrentUserServices currentUser, ITaskActivityService activityService, AppDbContext db) : base(currentUser, db)
+        private readonly ITaskAttachmentService _taskAttachmentService;
+        public EmployeeTaskController(
+     ICurrentUserServices currentUser,
+     ITaskActivityService activityService,
+     ITaskAttachmentService taskAttachmentService,
+     AppDbContext db)
+     : base(currentUser, db)
         {
             _activityService = activityService;
+            _taskAttachmentService = taskAttachmentService;
         }
         public async Task<IActionResult> Index(string? searchText, int? employeeId, int? statusId, int? priorityId)
         {
@@ -286,6 +296,9 @@ namespace TaskFlow.Controllers
 
             if (task == null)
                 return NotFound();
+
+            task.Attachments = await _taskAttachmentService.GetTaskAttachmentsAsync(id, CompanyId.Value);
+
             ViewBag.Statuses = await _db.EmployeeTaskStatus.Where(x => x.CompanyId == CompanyId.Value && x.IsActive)
                                     .OrderBy(x => x.DisplayOrder).ToListAsync();
 
@@ -322,6 +335,108 @@ namespace TaskFlow.Controllers
             SuccessMessage("Comment added successfully.");
 
             return RedirectToAction(nameof(Details), new { id = vm.TaskId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadAttachment(UploadTaskAttachmentsRequest request)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Details), new { id = request.TaskId });
+
+            try
+            {
+                request.CompanyId = CompanyId.Value;
+                request.EmployeeId = EmployeeId.Value;
+
+                var attachments = await _taskAttachmentService.UploadAsync(request);
+
+                await _activityService.AddActivityAsync(
+                    request.TaskId,
+                    EmployeeId.Value,
+                    TaskActivityTypes.AttachmentUploaded,
+                    $"Uploaded {attachments.Count} attachment(s).");
+
+                SuccessMessage($"{attachments.Count} attachment(s) uploaded successfully.");
+            }
+            catch (TaskFlowException ex)
+            {
+                ErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                ErrorMessage("An unexpected error occurred while uploading attachments.");
+            }
+
+            return RedirectToAction(nameof(Details), new { id = request.TaskId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadAttachment(long attachmentId)
+        {
+            try
+            {
+                var response = await _taskAttachmentService.DownloadAsync(
+                    new DownloadAttachmentRequest
+                    {
+                        AttachmentId = attachmentId,
+                        CompanyId = CompanyId.Value
+                    });
+
+                return File(
+                    response.FileBytes,
+                    response.ContentType,
+                    response.FileName);
+            }
+            catch (TaskFlowException ex)
+            {
+                ErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                ErrorMessage("Unable to download the selected attachment.");
+            }
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAttachment(DeleteAttachmentRequest request)
+        {
+            try
+            {
+                var attachment = await _taskAttachmentService.GetAttachmentAsync(
+                    request.AttachmentId,
+                    CompanyId.Value);
+
+                request.CompanyId = CompanyId.Value;
+
+                await _taskAttachmentService.DeleteAsync(request);
+
+                await _activityService.AddActivityAsync(
+                    attachment.EmployeeTaskId,
+                    EmployeeId.Value,
+                    TaskActivityTypes.AttachmentDeleted,
+                    $"Deleted attachment '{attachment.OriginalFileName}'.");
+
+                SuccessMessage("Attachment deleted successfully.");
+
+                return RedirectToAction(nameof(Details), new
+                {
+                    id = attachment.EmployeeTaskId
+                });
+            }
+            catch (TaskFlowException ex)
+            {
+                ErrorMessage(ex.Message);
+            }
+            catch (Exception)
+            {
+                ErrorMessage("Unable to delete the attachment.");
+            }
+
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [HttpPost]

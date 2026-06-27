@@ -7,6 +7,7 @@ using TaskFlow.Interfaces;
 using TaskFlow.Models;
 using TaskFlow.SeedData;
 using TaskFlow.Services;
+using TaskFlow.ViewModels.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,ApplicationUserClaimsPrincipalFactory>();
+
+builder.Services.Configure<AttachmentSettings>(builder.Configuration.GetSection(CustomSettings.AttachmentSettings));
 
 //policy improvised version of the roles we can centralize the authorize option and we can apply flexible logics in the policy
 builder.Services.AddAuthorization(options =>
@@ -89,8 +92,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserServices, CurrentUserServices>();
 builder.Services.AddScoped<ITaskActivityService,TaskActivityService>();
+builder.Services.AddScoped<ITaskAttachmentService, TaskAttachmentService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
-builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<EmployeeService>();
 var app = builder.Build();
 //Runs once on the http request and clears out all the instance created to run it

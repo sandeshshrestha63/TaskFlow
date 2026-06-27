@@ -14,9 +14,9 @@ namespace TaskFlow.Controllers
     public class EmployeeController : BaseController
     {
         private readonly EmployeeService _employeeService;
-        private readonly CompanyService _companyService;
+        private readonly ICompanyService _companyService;
 
-        public EmployeeController(AppDbContext context,ICurrentUserServices currentUser,EmployeeService employeeService,CompanyService companyService): base(currentUser,context)
+        public EmployeeController(AppDbContext context,ICurrentUserServices currentUser,EmployeeService employeeService,ICompanyService companyService): base(currentUser,context)
         {
             _employeeService = employeeService;
             _companyService = companyService;
@@ -38,11 +38,11 @@ namespace TaskFlow.Controllers
             return View(employee);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var employee = new EmployeeViewModel
             {
-                Companies = _companyService.GetAllCompanies()
+                Companies = await _companyService.GetAllCompaniesAsync()
             };
             return View(employee);
         }
@@ -82,7 +82,7 @@ namespace TaskFlow.Controllers
                 Email = employee.Email,
                 CompanyId = employee.CompanyId,
 
-                Companies = _companyService.GetAllCompanies()
+                Companies = await _companyService.GetAllCompaniesAsync()
             };
 
             return View(viewModel);

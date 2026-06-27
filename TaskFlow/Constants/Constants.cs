@@ -36,5 +36,22 @@
         public const string StatusChanged = "Status Changed";
         public const string CommentAdded = "Comment Added";
         public const string Completed = "Completed";
+        public const string AttachmentUploaded = "Attachment Uploaded";
+        public const string AttachmentDeleted = "Attachment Deleted";
+    }
+    public static class CustomSettings
+    {
+        public const string AttachmentSettings = "AttachmentSettings";
+    }
+    public static class ErrorMessages
+    {
+        public const string TaskNotFound = "Task not found.";
+
+        public const string NoFilesSelected = "Please select at least one file.";
+
+        public const string FileTypeNotAllowed = "The selected file type is not allowed.";
+
+        public const string FileIsEmpty = "The selected file is empty.";
     }
 }
+

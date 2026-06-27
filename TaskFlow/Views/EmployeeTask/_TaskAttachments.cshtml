@@ -1,0 +1,267 @@
+﻿@using TaskFlow.Helpers
+@model TaskFlow.ViewModels.EmployeeTask.TaskDetailsVM
+<style>
+    .attachment-card {
+        transition: all .2s ease;
+        border-radius: 12px;
+    }
+
+        .attachment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.08);
+        }
+
+    #selectedFiles div {
+        padding: 4px 0;
+    }
+</style>
+
+<div class="card shadow-sm border-0 mt-4">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+        <div>
+            <h5 class="mb-0">
+                <i class="bi bi-paperclip text-primary"></i>
+                Attachments
+            </h5>
+
+            <small class="text-muted">
+                @Model.Attachments.Count File(s)
+            </small>
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <form asp-action="UploadAttachment"
+              method="post"
+              enctype="multipart/form-data">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="TaskId"
+                   value="@Model.Id" />
+
+            <div class="border rounded-3 p-4 text-center bg-light">
+
+                <i class="bi bi-cloud-arrow-up display-5 text-primary"></i>
+
+                <h6 class="mt-3">
+                    Upload Files
+                </h6>
+
+                <p class="text-muted mb-3">
+                    Images, Documents, Archives
+                </p>
+
+                <input class="form-control"
+                       id="attachmentFiles"
+                       type="file"
+                       name="Files"
+                       multiple />
+
+                <div id="selectedFiles"
+                     class="mt-3 text-start small text-muted">
+                </div>
+
+                <button class="btn btn-primary mt-3">
+
+                    <i class="bi bi-upload"></i>
+
+                    Upload Attachment(s)
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <hr />
+
+        @if (!Model.Attachments.Any())
+        {
+            <div class="text-center py-5">
+
+                <i class="bi bi-folder2-open display-4 text-secondary"></i>
+
+                <h5 class="mt-3">
+
+                    No Attachments
+
+                </h5>
+
+                <p class="text-muted mb-0">
+
+                    Upload screenshots, PDFs, documents and other files for this task.
+
+                </p>
+
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-3">
+
+                @foreach (var attachment in Model.Attachments)
+                {
+                    <div class="card border attachment-card">
+
+                        <div class="card-body">
+
+                            <div class="row align-items-center">
+
+                                <div class="col-auto">
+
+                                    @{
+                                        string icon = "bi-file-earmark";
+                                        string color = "text-secondary";
+
+                                        string extension = System.IO.Path.GetExtension(attachment.OriginalFileName).ToLower();
+
+                                        switch (extension)
+                                        {
+                                            case ".pdf":
+                                                icon = "bi-file-earmark-pdf";
+                                                color = "text-danger";
+                                                break;
+
+                                            case ".doc":
+                                            case ".docx":
+                                                icon = "bi-file-earmark-word";
+                                                color = "text-primary";
+                                                break;
+
+                                            case ".xls":
+                                            case ".xlsx":
+                                                icon = "bi-file-earmark-excel";
+                                                color = "text-success";
+                                                break;
+
+                                            case ".ppt":
+                                            case ".pptx":
+                                                icon = "bi-file-earmark-ppt";
+                                                color = "text-warning";
+                                                break;
+
+                                            case ".zip":
+                                            case ".rar":
+                                            case ".7z":
+                                                icon = "bi-file-earmark-zip";
+                                                color = "text-dark";
+                                                break;
+
+                                            case ".jpg":
+                                            case ".jpeg":
+                                            case ".png":
+                                            case ".gif":
+                                            case ".webp":
+                                                icon = "bi-image";
+                                                color = "text-info";
+                                                break;
+                                        }
+                                    }
+
+                                    <i class="bi @icon @color"
+                                       style="font-size:40px;"></i>
+
+                                </div>
+
+                                <div class="col">
+
+                                    <div class="fw-semibold">
+
+                                        @attachment.OriginalFileName
+
+                                    </div>
+
+                                    <small class="text-muted">
+
+                                        Uploaded by
+
+                                        <strong>
+
+                                            @attachment.Employee.FirstName
+                                            @attachment.Employee.LastName
+
+                                        </strong>
+
+                                        •
+
+                                        @attachment.UploadedDate.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")
+
+                                    </small>
+
+                                </div>
+
+                                <div class="col-auto text-end">
+
+                                    <div class="fw-semibold">
+
+                                        @FileHelper.FormatFileSize(attachment.FileSize)
+
+                                    </div>
+
+                                    <div class="mt-2">
+
+                                        <a asp-action="DownloadAttachment"
+                                           asp-route-attachmentId="@attachment.Id"
+                                           class="btn btn-sm btn-outline-primary">
+
+                                            <i class="bi bi-download"></i>
+
+                                        </a>
+
+                                        <form asp-action="DeleteAttachment"
+                                              method="post"
+                                              class="d-inline">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="AttachmentId"
+                                                   value="@attachment.Id" />
+
+                                            <button class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Delete this attachment?')">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>
+<script>
+    document.getElementById("attachmentFiles").addEventListener("change", function () {
+
+        let container = document.getElementById("selectedFiles");
+
+        container.innerHTML = "";
+
+        for (let file of this.files) {
+
+            container.innerHTML +=
+                `<div><i class="bi bi-file-earmark"></i> ${file.name}</div>`;
+        }
+
+    });
+</script>
