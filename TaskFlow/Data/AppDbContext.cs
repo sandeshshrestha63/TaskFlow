@@ -37,7 +37,7 @@ namespace TaskFlow.Data
         public DbSet<TaskComment> TaskComments { get; set; }
         public DbSet<TaskActivity> TaskActivities { get; set; }
         public DbSet<EmployeeTaskAttachment> EmployeeTaskAttachments { get; set; }
-
+        public DbSet<Notification> Notifications { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -118,6 +118,45 @@ namespace TaskFlow.Data
                 .WithMany()
                 .HasForeignKey(x => x.EmployeeId)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Company)
+                .WithMany()
+                .HasForeignKey(n => n.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Employee)
+                .WithMany()
+                .HasForeignKey(n => n.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.CreatedByEmployee)
+                .WithMany()
+                .HasForeignKey(n => n.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.UpdatedByEmployee)
+                .WithMany()
+                .HasForeignKey(n => n.UpdatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasIndex(x => new
+                {
+                    x.EmployeeId,
+                    x.IsDeleted,
+                    x.CreatedDate
+                });
+
+            modelBuilder.Entity<Notification>()
+                .HasIndex(x => new
+                {
+                    x.EmployeeId,
+                    x.IsRead,
+                    x.IsDeleted
+                });
         }
     }
 }
