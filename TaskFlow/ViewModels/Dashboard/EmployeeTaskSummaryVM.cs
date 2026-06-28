@@ -15,6 +15,8 @@
         public string PriorityColor { get; set; } = string.Empty;
         public bool IsOverdue { get; set; }
         public string AssignedBy { get; set; } = string.Empty;
+        public string AssignedTo { get; set; } = string.Empty;
         public DateTime? DueDate { get; set; }
+        public int DaysRemaining { get; set; }
     }
 }

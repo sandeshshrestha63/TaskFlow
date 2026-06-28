@@ -29,6 +29,9 @@
         public int? StatusId { get; set; }
 
         public int? PriorityId { get; set; }
+        public string? DashboardFilter { get; set; }
+
+        public string? DashboardFilterDescription { get; set; }
 
         public List<EmployeeTaskListVM> Tasks { get; set; }
     }

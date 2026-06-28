@@ -1,0 +1,63 @@
+﻿@model List<TaskFlow.ViewModels.Dashboard.QuickActionVM>
+<style>
+    .quick-action-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .quick-btn {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 6px;
+        white-space: nowrap;
+        transition: 0.2s ease;
+    }
+
+        .quick-btn i {
+            font-size: 0.8rem;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-1px);
+        }
+</style>
+<div class="dashboard-card">
+
+    <div class="dashboard-card-header">
+
+        <div>
+            <h5 class="dashboard-card-title">
+                <i class="fa-solid fa-bolt text-warning me-2"></i>
+                Quick Actions
+            </h5>
+
+            <p class="dashboard-card-subtitle">
+                Frequently used actions
+            </p>
+        </div>
+
+    </div>
+
+    <div class="dashboard-card-body">
+
+        <div class="quick-action-grid">
+
+            @foreach (var action in Model)
+            {
+                <a asp-controller="@action.Controller"
+                   asp-action="@action.Action"
+                   class="quick-btn btn btn-outline-@action.ColorClass">
+
+                    <i class="fa-solid @action.Icon me-1"></i>
+
+                    @action.Title
+
+                </a>
+            }
+
+        </div>
+
+    </div>
+
+</div>

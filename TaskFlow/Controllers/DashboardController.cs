@@ -28,7 +28,7 @@ namespace TaskFlow.Controllers
             if (User.IsInRole(Roles.CompanyAdmin))
             {
                 var vm = await _dashboardService.GetCompanyDashboardAsync(CompanyId);
-                return View("CompanyAdmin", vm);
+                return View("Company", vm);
             }
 
             var employeeVm = await _dashboardService.GetEmployeeDashboardAsync(CompanyId, EmployeeId);

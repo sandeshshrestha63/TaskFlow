@@ -29,7 +29,46 @@
 
         <!-- BODY -->
         <div class="card-body">
+            @if (!string.IsNullOrWhiteSpace(Model.DashboardFilter))
+            {
+                <div class="dashboard-filter-banner">
 
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <div class="dashboard-filter-icon">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+
+                            <div class="ms-3">
+
+                                <div class="dashboard-filter-title">
+                                    Dashboard Filter Applied
+                                </div>
+
+                                <div class="dashboard-filter-text">
+                                    Showing:
+                                    <strong>@Model.DashboardFilterDescription</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <a asp-action="Index"
+                           class="btn btn-sm btn-outline-secondary">
+
+                            <i class="fa-solid fa-xmark me-1"></i>
+
+                            Clear Filter
+
+                        </a>
+
+                    </div>
+
+                </div>
+            }
             <!-- FILTERS -->
             <form method="get">
 

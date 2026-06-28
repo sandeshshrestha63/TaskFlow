@@ -1,0 +1,96 @@
+﻿@model TaskFlow.ViewModels.Dashboard.CompanyDashboardVM
+
+<div class="row">
+
+    <div class="col-md-3 mb-4">
+
+        <a asp-controller="Employee"
+           asp-action="Index"
+           class="dashboard-card-link">
+
+            <div class="card dashboard-stat-card">
+
+                <div class="card-body">
+
+                    <h6>Total Employees</h6>
+
+                    <h2>@Model.TotalEmployees</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <div class="col-md-3 mb-4">
+
+        <a asp-controller="EmployeeTask"
+           asp-action="Index"
+           asp-route-dashboardFilter="active"
+           class="dashboard-card-link">
+
+            <div class="card dashboard-stat-card">
+
+                <div class="card-body">
+
+                    <h6>Active Tasks</h6>
+
+                    <h2>@Model.ActiveTasks</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <div class="col-md-3 mb-4">
+
+        <a asp-controller="EmployeeTask"
+           asp-action="Index"
+           asp-route-dashboardFilter="completedtoday"
+           class="dashboard-card-link">
+
+            <div class="card dashboard-stat-card">
+
+                <div class="card-body">
+
+                    <h6>Completed Today</h6>
+
+                    <h2>@Model.CompletedToday</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <div class="col-md-3 mb-4">
+
+        <a asp-controller="EmployeeTask"
+           asp-action="Index"
+           asp-route-dashboardFilter="overdue"
+           class="dashboard-card-link">
+
+            <div class="card dashboard-stat-card">
+
+                <div class="card-body">
+
+                    <h6>Overdue Tasks</h6>
+
+                    <h2 class="text-danger">@Model.OverdueTasks</h2>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</div>

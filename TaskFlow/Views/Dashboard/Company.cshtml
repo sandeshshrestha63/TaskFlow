@@ -1,0 +1,69 @@
+﻿@model TaskFlow.ViewModels.Dashboard.CompanyDashboardVM
+
+@{
+    ViewData["Title"] = "Company Dashboard";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+}
+
+<div class="container-fluid">
+
+    <partial name="~/Views/Shared/Dashboard/_CompanyGreetingCard.cshtml"
+             model="Model" />
+
+    <div class="dashboard-section">
+        <partial name="~/Views/Shared/Dashboard/_CompanyStatisticsCards.cshtml"
+                 model="Model" />
+    </div>
+    <div class="dashboard-section">
+        <partial name="~/Views/Shared/Dashboard/_QuickActions.cshtml"
+                 model="Model.QuickActions" />
+    </div>
+
+    <div class="row">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-xl-6">
+
+            
+
+            <div class="dashboard-section">
+
+                <partial name="~/Views/Shared/Dashboard/_EmployeesNeedingAttention.cshtml"
+                         model="Model.EmployeesNeedingAttention" />
+
+            </div>
+
+            <div class="dashboard-section">
+
+                <partial name="~/Views/Shared/Dashboard/_AttentionTasks.cshtml"
+                         model="Model.AttentionTasks" />
+
+            </div>
+            <div class="dashboard-section">
+
+                <partial name="~/Views/Shared/Dashboard/_TeamInsights.cshtml"
+                         model="Model.TeamInsights" />
+
+            </div>
+            <div class="dashboard-section">
+
+                <partial name="~/Views/Shared/Dashboard/_CompanyUpcomingDeadlines.cshtml"
+                         model="Model.UpcomingDeadlines" />
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-xl-6">
+
+            <partial name="~/Views/Shared/Dashboard/_CompanyRecentActivity.cshtml"
+                     model="Model.RecentActivities" />
+
+        </div>
+
+    </div>
+
+</div>

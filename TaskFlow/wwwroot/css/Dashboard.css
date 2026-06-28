@@ -154,6 +154,78 @@ a {
     color: var(--tf-text-light);
     font-size: .85rem;
 }
+.dashboard-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--tf-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.dashboard-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--tf-border);
+    background: #fff;
+}
+
+    .dashboard-footer a {
+        font-weight: 600;
+    }
+
+.dashboard-kpi {
+    text-align: center;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.dashboard-kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.dashboard-kpi-label {
+    color: var(--tf-text-light);
+    font-size: .8rem;
+}
+
+.dashboard-list-item {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--tf-border);
+    transition: all .2s ease;
+}
+    .dashboard-list-item:last-child {
+        border-bottom: none;
+    }
+
+    .dashboard-list-item:hover {
+        background: #f8fafc;
+    }
+
+.dashboard-list-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+    .dashboard-list-link:hover {
+        color: inherit;
+    }
+
+.task-title {
+    font-size: .95rem;
+    font-weight: 600;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 /*==================================================
     WIDGET
@@ -448,6 +520,45 @@ a {
 .greeting-summary-label {
     font-size: .85rem;
     color: rgba(255,255,255,.85);
+}
+/* ===========================================
+   Team Insights
+=========================================== */
+
+.team-progress-item {
+    margin-bottom: 1.25rem;
+}
+
+.insight-box {
+    background: var(--tf-bg-light);
+    border: 1px solid var(--tf-border);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    transition: .25s ease;
+    height: 100%;
+}
+
+    .insight-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .35rem .75rem rgba(0,0,0,.06);
+    }
+
+.insight-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--tf-text);
+    line-height: 1;
+}
+
+.insight-label {
+    margin-top: .45rem;
+    font-size: .82rem;
+    color: var(--tf-text-light);
+}
+
+.team-progress-item:last-child {
+    margin-bottom: 0;
 }
 
 /*==================================================
@@ -1561,7 +1672,15 @@ a {
         width: 100%;
         text-align: left;
     }
-
+    .deadline-pill {
+        display: inline-block;
+        background: #eef5ff;
+        color: #2563eb;
+        font-size: .78rem;
+        font-weight: 600;
+        padding: .25rem .65rem;
+        border-radius: 999px;
+    }
     .task-table {
         min-width: 720px;
     }

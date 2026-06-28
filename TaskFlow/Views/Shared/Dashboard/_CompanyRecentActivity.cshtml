@@ -1,0 +1,134 @@
+﻿@model List<TaskFlow.ViewModels.Dashboard.DashboardActivityVM>
+
+<div class="dashboard-card h-100">
+
+    <div class="dashboard-card-header">
+
+        <div>
+
+            <h5 class="dashboard-card-title mb-1">
+
+                <i class="bi bi-clock-history text-primary me-2"></i>
+
+                Company Recent Activity
+
+            </h5>
+
+            <div class="dashboard-card-subtitle">
+
+                Latest updates from your assigned tasks
+
+            </div>
+
+        </div>
+
+        <span class="tf-badge badge-progress">
+
+            @(Model?.Count ?? 0)
+
+        </span>
+
+    </div>
+
+    <div class="dashboard-card-body">
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="activity-list">
+
+                @foreach (var activity in Model)
+                {
+                    <div class="activity-item activity-info">
+
+                        <div class="activity-dot"></div>
+
+                        <div class="activity-card">
+
+                            <div class="activity-header">
+
+                                <div class="activity-user">
+
+                                    <div class="icon-circle">
+
+                                        <i class="bi bi-person-fill"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="activity-name">
+
+                                            @activity.EmployeeName
+
+                                        </div>
+
+                                        <div class="activity-time">
+
+                                            <i class="bi bi-clock me-1"></i>
+
+                                            @activity.CreatedDate.ToString("dd MMM yyyy • hh:mm tt")
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="activity-description">
+
+                                @activity.Description
+
+                            </div>
+
+                            <div class="mt-3">
+
+                                <a asp-controller="EmployeeTask"
+                                   asp-action="Details"
+                                   asp-route-id="@activity.TaskId"
+                                   class="tf-btn tf-btn-outline tf-btn-sm">
+
+                                    <i class="bi bi-box-arrow-up-right"></i>
+
+                                    @activity.TaskTitle
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+
+                <div class="empty-state-icon">
+
+                    <i class="bi bi-clock-history"></i>
+
+                </div>
+
+                <div class="empty-state-title">
+
+                    No Recent Activity
+
+                </div>
+
+                <div class="empty-state-text">
+
+                    Activity related to your tasks will appear here once work begins.
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

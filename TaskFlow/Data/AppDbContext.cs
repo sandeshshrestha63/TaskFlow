@@ -50,13 +50,13 @@ namespace TaskFlow.Data
 
             modelBuilder.Entity<EmployeeTask>()
                 .HasOne(x => x.CreatedByEmployee)
-                .WithMany()
+                .WithMany(x => x.CreatedTasks)
                 .HasForeignKey(x => x.CreatedByEmployeeId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<EmployeeTask>()
                 .HasOne(x => x.AssignedToEmployee)
-                .WithMany()
+                .WithMany(x => x.AssignedTasks)
                 .HasForeignKey(x => x.AssignedToEmployeeId)
                 .OnDelete(DeleteBehavior.NoAction);
 

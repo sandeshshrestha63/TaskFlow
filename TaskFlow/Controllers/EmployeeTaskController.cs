@@ -28,7 +28,7 @@ namespace TaskFlow.Controllers
             _activityService = activityService;
             _taskAttachmentService = taskAttachmentService;
         }
-        public async Task<IActionResult> Index(string? searchText, int? employeeId, int? statusId, int? priorityId)
+        public async Task<IActionResult> Index(string? searchText, int? employeeId, int? statusId, int? priorityId, string? dashboardFilter)
         {
             var companyId = CompanyId;
 
@@ -58,6 +58,89 @@ namespace TaskFlow.Controllers
                 query = query.Where(x => x.EmployeeTaskPriorityId == priorityId);
             }
 
+
+            var today = DateTime.Today;
+            string? dashboardFilterDescription = null;
+
+
+            if (!string.IsNullOrWhiteSpace(dashboardFilter))
+            {
+                switch (dashboardFilter.ToLower())
+                {
+                    case DashboardFilters.Active:
+
+                        query = query.Where(x => x.CompletedDate == null);
+                        dashboardFilterDescription = "Active Tasks";
+                        break;
+
+                    case DashboardFilters.CompletedToday:
+
+                        query = query.Where(x =>
+                            x.CompletedDate.HasValue &&
+                            x.CompletedDate.Value.Date == today);
+                        dashboardFilterDescription = "Completed Today";
+
+
+                        break;
+
+                    case DashboardFilters.Overdue:
+
+                        query = query.Where(x =>
+                            x.CompletedDate == null &&
+                            x.DueDate.HasValue &&
+                            x.DueDate.Value.Date < today);
+                        dashboardFilterDescription = "Overdue Tasks";
+
+
+                        break;
+
+                    case DashboardFilters.DueToday:
+
+                        query = query.Where(x =>
+                            x.CompletedDate == null &&
+                            x.DueDate.HasValue &&
+                            x.DueDate.Value.Date == today);
+                        dashboardFilterDescription = "Tasks Due Today";
+
+
+                        break;
+
+                    case DashboardFilters.Critical:
+
+                        query = query.Where(x =>
+                            x.EmployeeTaskPriority.Name == "Critical");
+                        dashboardFilterDescription = "Critical Tasks";
+
+
+                        break;
+                }
+                if (employeeId.HasValue)
+                {
+                    var employee = await _db.Employees
+                        .AsNoTracking()
+                        .Where(x => x.CompanyId == companyId && x.Id == employeeId)
+                        .Select(x => new
+                        {
+                            x.FirstName,
+                            x.LastName
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (employee != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(dashboardFilterDescription))
+                        {
+                            dashboardFilterDescription =
+                                $"{employee.FirstName} {employee.LastName}'s {dashboardFilterDescription}";
+                        }
+                        else
+                        {
+                            dashboardFilterDescription =
+                                $"{employee.FirstName} {employee.LastName}'s Tasks";
+                        }
+                    }
+                }
+            }
             var tasks = await query.OrderByDescending(x => x.CreatedDate).Select(x => new EmployeeTaskListVM
             {
                 Id = x.Id,
@@ -81,6 +164,10 @@ namespace TaskFlow.Controllers
                 EmployeeId = employeeId,
                 StatusId = statusId,
                 PriorityId = priorityId,
+
+                DashboardFilter = dashboardFilter,
+                DashboardFilterDescription = dashboardFilterDescription,
+
                 Tasks = tasks
             });
         }
@@ -313,7 +400,7 @@ namespace TaskFlow.Controllers
                 return RedirectToAction(nameof(Details), new { id = vm.TaskId });
 
             var task = await _db.EmployeeTasks
-                .FirstOrDefaultAsync(x => 
+                .FirstOrDefaultAsync(x =>
                     x.Id == vm.TaskId &&
                     x.CompanyId == CompanyId);
 

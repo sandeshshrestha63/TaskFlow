@@ -1,0 +1,229 @@
+﻿@model TaskFlow.ViewModels.Dashboard.TeamInsightsVM
+
+<div class="dashboard-card">
+
+    <div class="dashboard-card-header">
+
+        <div>
+
+            <h5 class="dashboard-card-title">
+                <i class="fa-solid fa-chart-line text-success me-2"></i>
+                Team Insights
+            </h5>
+
+            <p class="dashboard-card-subtitle">
+                Team workload and performance overview
+            </p>
+
+        </div>
+
+        <span class="tf-badge">
+            @Model.TotalEmployees Employees
+        </span>
+
+    </div>
+
+    <div class="dashboard-card-body">
+
+        <!-- =============================== -->
+        <!-- Workload Overview -->
+        <!-- =============================== -->
+
+        <div class="team-progress-item">
+
+            <div class="d-flex justify-content-between">
+
+                <span>
+                    <i class="fa-solid fa-circle text-success me-2"></i>
+                    Balanced
+                </span>
+
+                <strong>@Model.BalancedEmployees</strong>
+
+            </div>
+
+            <div class="tf-progress mt-2">
+
+                <div class="tf-progress-bar bg-success"
+                     style="width:@(Model.TotalEmployees == 0 ? 0 : (Model.BalancedEmployees * 100 / Model.TotalEmployees))%">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="team-progress-item">
+
+            <div class="d-flex justify-content-between">
+
+                <span>
+                    <i class="fa-solid fa-circle text-warning me-2"></i>
+                    Busy
+                </span>
+
+                <strong>@Model.BusyEmployees</strong>
+
+            </div>
+
+            <div class="tf-progress mt-2">
+
+                <div class="tf-progress-bar bg-warning"
+                     style="width:@(Model.TotalEmployees == 0 ? 0 : (Model.BusyEmployees * 100 / Model.TotalEmployees))%">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="team-progress-item">
+
+            <div class="d-flex justify-content-between">
+
+                <span>
+                    <i class="fa-solid fa-circle text-danger me-2"></i>
+                    Overloaded
+                </span>
+
+                <strong>@Model.OverloadedEmployees</strong>
+
+            </div>
+
+            <div class="tf-progress mt-2">
+
+                <div class="tf-progress-bar bg-danger"
+                     style="width:@(Model.TotalEmployees == 0 ? 0 : (Model.OverloadedEmployees * 100 / Model.TotalEmployees))%">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="team-progress-item">
+
+            <div class="d-flex justify-content-between">
+
+                <span>
+                    <i class="fa-solid fa-circle text-secondary me-2"></i>
+                    No Tasks
+                </span>
+
+                <strong>@Model.EmployeesWithoutTasks</strong>
+
+            </div>
+
+            <div class="tf-progress mt-2">
+
+                <div class="tf-progress-bar bg-secondary"
+                     style="width:@(Model.TotalEmployees == 0 ? 0 : (Model.EmployeesWithoutTasks * 100 / Model.TotalEmployees))%">
+                </div>
+
+            </div>
+
+        </div>
+
+        <hr class="my-4" />
+
+        <!-- =============================== -->
+        <!-- KPI Cards -->
+        <!-- =============================== -->
+
+        <div class="row g-3">
+
+            <div class="col-6">
+
+                <div class="insight-box">
+
+                    <div class="insight-value">
+
+                        @Model.TotalActiveTasks
+
+                    </div>
+
+                    <div class="insight-label">
+
+                        Active Tasks
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <div class="insight-box">
+
+                    <div class="insight-value">
+
+                        @Model.TasksCompleted
+
+                    </div>
+
+                    <div class="insight-label">
+
+                        Completed
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <div class="insight-box">
+
+                    <div class="insight-value">
+
+                        @Model.CompletionRate%
+
+                    </div>
+
+                    <div class="insight-label">
+
+                        Completion Rate
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <div class="insight-box">
+
+                    <div class="insight-value">
+
+                        @Model.AverageCompletionDays
+
+                    </div>
+
+                    <div class="insight-label">
+
+                        Avg Completion (Days)
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-footer">
+
+        <a asp-controller="Analytics"
+           asp-action="TeamInsights">
+
+            View Full Analytics
+
+            <i class="fa-solid fa-arrow-right ms-1"></i>
+
+        </a>
+
+    </div>
+
+</div>

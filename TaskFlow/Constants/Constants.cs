@@ -53,5 +53,17 @@
 
         public const string FileIsEmpty = "The selected file is empty.";
     }
+    public static class DashboardFilters
+    {
+        public const string Active = "active";
+
+        public const string CompletedToday = "completedtoday";
+
+        public const string Overdue = "overdue";
+
+        public const string DueToday = "duetoday";
+
+        public const string Critical = "critical";
+    }
 }
 

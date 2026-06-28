@@ -1,0 +1,42 @@
+﻿@* @model List<TaskFlow.ViewModels.Dashboard.EmployeeWorkloadVM> *@
+
+@* <div class="card dashboard-card h-100"> *@
+
+@*     <div class="card-header dashboard-card-header"> *@
+
+@*         <h5 class="mb-0"> *@
+
+@*             Employee Workload *@
+
+@*         </h5> *@
+
+@*     </div> *@
+
+@*     <div class="card-body"> *@
+
+@*         @foreach (var employee in Model) *@
+@*         { *@
+@*             <div class="mb-4"> *@
+
+@*                 <div class="d-flex justify-content-between"> *@
+
+@*                     <strong>@employee.EmployeeName</strong> *@
+
+@*                     <span>@employee.ActiveTaskCount Tasks</span> *@
+
+@*                 </div> *@
+
+@*                 <div class="progress mt-2"> *@
+
+@*                     <div class="progress-bar" *@
+@*                          style="width:@employee.WorkloadPercentage%"> *@
+@*                     </div> *@
+
+@*                 </div> *@
+
+@*             </div> *@
+@*         } *@
+
+@*     </div> *@
+
+@* </div> *@
