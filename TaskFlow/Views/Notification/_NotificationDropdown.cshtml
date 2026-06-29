@@ -1,0 +1,117 @@
+﻿@using TaskFlow.Helpers
+@model List<TaskFlow.DTOs.Notification.NotificationResponse>
+<style>
+    .notification-dropdown {
+        width: 460px;
+    }
+
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 18px;
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 600;
+    }
+
+    .notification-body {
+        max-height: 420px;
+        overflow-y: auto;
+    }
+
+    .notification-item {
+        padding: 14px 18px;
+        border-bottom: 1px solid #f1f3f5;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .notification-item:hover {
+            background: #f8f9fa;
+        }
+
+        .notification-item.unread {
+            background: #eef6ff;
+        }
+
+    .notification-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .notification-message {
+        font-size: .9rem;
+        color: #6c757d;
+        margin-bottom: 6px;
+    }
+
+    .notification-empty {
+        text-align: center;
+        padding: 45px 20px;
+    }
+
+    .notification-footer {
+        padding: 12px;
+        border-top: 1px solid #e9ecef;
+        text-align: center;
+    }
+</style>
+<div class="notification-dropdown">
+
+    <div class="notification-header">
+        <h6 class="mb-0">Notifications</h6>
+
+        @if (Model.Any(x => !x.IsRead))
+        {
+            <span class="badge bg-danger">
+                @Model.Count(x => !x.IsRead)
+            </span>
+        }
+    </div>
+
+    <div class="notification-body">
+
+        @if (!Model.Any())
+        {
+            <div class="notification-empty">
+                <i class="bi bi-bell-slash fs-3 text-muted"></i>
+
+                <p class="mt-2 mb-0">
+                    You're all caught up!
+                </p>
+            </div>
+        }
+        else
+        {
+            @foreach (var notification in Model)
+            {
+                <a asp-controller="Notification"
+                   asp-action="Open"
+                   asp-route-id="@notification.NotificationId"
+                   class="notification-item @(notification.IsRead ? "" : "unread") text-decoration-none text-dark">
+
+                    <div class="notification-title">
+                        @notification.Title
+                    </div>
+
+                    <div class="notification-message">
+                        @notification.Message
+                    </div>
+
+                    <small class="text-muted">
+                        @TimeAgoHelper.GetRelativeTime(notification.CreatedDate)
+                    </small>
+
+                </a>
+            }
+        }
+
+    </div>
+
+    <div class="notification-footer">
+        <a asp-controller="Notification" asp-action="Index" class="text-decoration-none fw-semibold">
+            View All Notifications
+            <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>

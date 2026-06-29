@@ -11,6 +11,9 @@ using TaskFlow.ViewModels.EmployeeTask;
 using TaskFlow.Exceptions;
 using TaskFlow.Services;
 using TaskFlow.ViewModels.Requests.Attachments;
+using TaskFlow.DTOs.Notification;
+using TaskFlow.Helpers;
+using TaskFlow.Extensions;
 
 namespace TaskFlow.Controllers
 {
@@ -18,15 +21,13 @@ namespace TaskFlow.Controllers
     {
         private ITaskActivityService _activityService;
         private readonly ITaskAttachmentService _taskAttachmentService;
-        public EmployeeTaskController(
-     ICurrentUserServices currentUser,
-     ITaskActivityService activityService,
-     ITaskAttachmentService taskAttachmentService,
-     AppDbContext db)
-     : base(currentUser, db)
+        private readonly INotificationService _notificationService;
+
+        public EmployeeTaskController(ICurrentUserServices currentUser, INotificationService notificationService, ITaskActivityService activityService, ITaskAttachmentService taskAttachmentService, AppDbContext db) : base(currentUser, db)
         {
             _activityService = activityService;
             _taskAttachmentService = taskAttachmentService;
+            _notificationService = notificationService;
         }
         public async Task<IActionResult> Index(string? searchText, int? employeeId, int? statusId, int? priorityId, string? dashboardFilter)
         {
@@ -225,6 +226,22 @@ namespace TaskFlow.Controllers
             await _db.SaveChangesAsync();
             await _activityService.AddActivityAsync(employeeTask.Id, EmployeeId, TaskActivityTypes.Created, $"Task '{employeeTask.Title}' was created.");
 
+            if (employeeTask.AssignedToEmployeeId.Value != EmployeeId)
+            {
+                var notificationRequest = new NotificationRequest
+                {
+                    CompanyId = CompanyId,
+                    Title = "New Task Assigned",
+                    Message = $"You have been assigned the task '{employeeTask.Title}'.",
+                    NotificationType = NotificationType.TaskAssigned,
+                    ReferenceType = ReferenceType.Task,
+                    ReferenceId = employeeTask.Id,
+                    Priority = NotificationPriority.Normal,
+                    CreatedBy = EmployeeId
+                };
+                await _notificationService.CreateNotificationAsync(notificationRequest, new[] { employeeTask.AssignedToEmployeeId.Value });
+            }
+
             TempData["Success"] = "Task created successfully.";
 
             return RedirectToAction(nameof(Index));
@@ -300,6 +317,30 @@ namespace TaskFlow.Controllers
             if (oldAssignedEmployeeId != vm.AssignedToEmployeeId)
             {
                 await _activityService.AddActivityAsync(task.Id, EmployeeId, TaskActivityTypes.Assigned, "Task assignment was changed.");
+                await _notificationService.CreateNotificationAsync(new NotificationRequest
+                {
+                    CompanyId = CompanyId,
+                    Title = "Task Reassigned",
+                    Message = $"You have been assigned the task '{task.Title}'.",
+                    NotificationType = NotificationType.TaskAssigned,
+                    ReferenceType = ReferenceType.Task,
+                    ReferenceId = task.Id,
+                    Priority = NotificationPriority.High
+                }, new[] { vm.AssignedToEmployeeId });
+            }
+            if (oldDueDate != vm.DueDate)
+            {
+                await _notificationService.CreateNotificationAsync(
+                    new NotificationRequest
+                    {
+                        CompanyId = CompanyId,
+                        Title = "Task Due Date Updated",
+                        Message = $"The due date for '{task.Title}' has been updated.",
+                        NotificationType = NotificationType.TaskUpdated,
+                        ReferenceType = ReferenceType.Task,
+                        ReferenceId = task.Id,
+                        Priority = NotificationPriority.Normal
+                    }, new[] { task.AssignedToEmployeeId.Value });
             }
             if (oldPriorityId != vm.EmployeeTaskPriorityId)
             {
@@ -308,6 +349,17 @@ namespace TaskFlow.Controllers
                 var newPriority = await _db.TaskPriorities.Where(x => x.Id == vm.EmployeeTaskPriorityId).Select(x => x.Name).FirstOrDefaultAsync();
 
                 await _activityService.AddActivityAsync(task.Id, EmployeeId, TaskActivityTypes.PriorityChanged, $"Priority changed from '{oldPriority}' to '{newPriority}'.");
+                await _notificationService.CreateNotificationAsync(
+                    new NotificationRequest
+                    {
+                        CompanyId = CompanyId,
+                        Title = "Task Priority Updated",
+                        Message = $"The priority for '{task.Title}' has been changed from '{oldPriority}' to '{newPriority}'.",
+                        NotificationType = NotificationType.TaskUpdated,
+                        ReferenceType = ReferenceType.Task,
+                        ReferenceId = task.Id,
+                        Priority = NotificationPriority.Normal
+                    }, new[] { task.AssignedToEmployeeId.Value });
             }
 
             SuccessMessage("Task updated successfully.");
@@ -419,6 +471,38 @@ namespace TaskFlow.Controllers
 
             await _db.SaveChangesAsync();
 
+            var recipients = new HashSet<int>();
+
+            if (task.CreatedByEmployeeId != EmployeeId)
+            {
+                recipients.Add(task.CreatedByEmployeeId);
+            }
+
+            if (task.AssignedToEmployeeId != EmployeeId)
+            {
+                recipients.Add(task.AssignedToEmployeeId.Value);
+            }
+
+            if (recipients.Any())
+            {
+                var employee = await _db.Employees
+                    .FirstOrDefaultAsync(x => x.Id == EmployeeId);
+
+                var employeeName = employee?.GetFullName();
+
+                await _notificationService.CreateNotificationAsync(
+                    new NotificationRequest
+                    {
+                        CompanyId = CompanyId,
+                        Title = "New Comment",
+                        Message = $"{employeeName} commented on the task '{task.Title}'.",
+                        NotificationType = NotificationType.CommentAdded,
+                        ReferenceType = ReferenceType.Task,
+                        ReferenceId = task.Id,
+                        Priority = NotificationPriority.Normal
+                    },
+                    recipients);
+            }
             SuccessMessage("Comment added successfully.");
 
             return RedirectToAction(nameof(Details), new { id = vm.TaskId });
@@ -559,7 +643,39 @@ namespace TaskFlow.Controllers
                 var newStatus = await _db.EmployeeTaskStatus.Where(x => x.Id == vm.StatusId).Select(x => x.Name).FirstOrDefaultAsync();
 
                 await _activityService.AddActivityAsync(task.Id, EmployeeId, TaskActivityTypes.StatusChanged, $"Status changed from '{oldStatus}' to '{newStatus}'.");
+
+                if (newStatus.Equals("Completed", StringComparison.OrdinalIgnoreCase))
+                {
+                    await _notificationService.CreateNotificationAsync(
+
+                        new NotificationRequest
+                        {
+                            CompanyId = CompanyId,
+                            Title = "Task Completed",
+                            Message = $"The task '{task.Title}' has been completed.",
+                            NotificationType = NotificationType.TaskCompleted,
+                            ReferenceType = ReferenceType.Task,
+                            ReferenceId = task.Id,
+                            Priority = NotificationPriority.Normal
+                        }, new[] { task.CreatedByEmployeeId });
+                }
+                else
+                {
+                    await _notificationService.CreateNotificationAsync(
+
+                        new NotificationRequest
+                        {
+                            CompanyId = CompanyId,
+                            Title = "Task Status Updated",
+                            Message = $"The task '{task.Title}' status has been changed to '{newStatus}'.",
+                            NotificationType = NotificationType.TaskUpdated,
+                            ReferenceType = ReferenceType.Task,
+                            ReferenceId = task.Id,
+                            Priority = NotificationPriority.Low
+                        }, new[] { task.CreatedByEmployeeId });
+                }
             }
+
 
 
             SuccessMessage("Task status updated successfully.");

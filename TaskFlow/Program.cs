@@ -7,6 +7,7 @@ using TaskFlow.Interfaces;
 using TaskFlow.Models;
 using TaskFlow.SeedData;
 using TaskFlow.Services;
+using TaskFlow.Services.Notifications;
 using TaskFlow.ViewModels.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -95,7 +96,8 @@ builder.Services.AddScoped<ITaskActivityService,TaskActivityService>();
 builder.Services.AddScoped<ITaskAttachmentService, TaskAttachmentService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-
+builder.Services.AddScoped<IDateTimeService, DateTimeService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddScoped<EmployeeService>();
 var app = builder.Build();
