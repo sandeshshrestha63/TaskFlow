@@ -38,6 +38,9 @@ namespace TaskFlow.Data
         public DbSet<TaskActivity> TaskActivities { get; set; }
         public DbSet<EmployeeTaskAttachment> EmployeeTaskAttachments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectStatus> ProjectStatus { get; set; }
+        public DbSet<ProjectPriority> ProjectPriorities { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -142,6 +145,30 @@ namespace TaskFlow.Data
                 .HasForeignKey(n => n.UpdatedBy)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Project>()
+                .HasOne(x => x.Company)
+                .WithMany()
+                .HasForeignKey(x => x.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Project>()
+                .HasOne(x => x.CreatedByEmployee)
+                .WithMany()
+                .HasForeignKey(x => x.CreatedByEmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Project>()
+                .HasOne(x => x.ProjectStatus)
+                .WithMany(x => x.Projects)
+                .HasForeignKey(x => x.ProjectStatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Project>()
+                .HasOne(x => x.ProjectPriority)
+                .WithMany(x => x.Projects)
+                .HasForeignKey(x => x.ProjectPriorityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Notification>()
                 .HasIndex(x => new
                 {
@@ -157,6 +184,7 @@ namespace TaskFlow.Data
                     x.IsRead,
                     x.IsDeleted
                 });
+
         }
     }
 }
