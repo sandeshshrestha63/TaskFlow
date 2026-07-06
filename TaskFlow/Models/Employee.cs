@@ -23,5 +23,6 @@
         public ICollection<EmployeeTask> AssignedTasks { get; set; } = new List<EmployeeTask>();
 
         public ICollection<EmployeeTask> CreatedTasks { get; set; } = new List<EmployeeTask>();
+        public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
     }
 }

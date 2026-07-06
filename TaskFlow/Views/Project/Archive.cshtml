@@ -1,0 +1,123 @@
+﻿@model TaskFlow.ViewModels.Project.ProjectCreateVM
+
+@{
+    ViewData["Title"] = "Archive Project";
+}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-danger">
+
+                <div class="card-header bg-danger text-white">
+
+                    <h4 class="mb-0">
+                        <i class="bi bi-archive"></i>
+                        Archive Project
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="alert alert-warning">
+
+                        <strong>Warning</strong>
+
+                        <p class="mb-0 mt-2">
+                            Archiving this project will remove it from the active project list.
+                            All related information will be preserved and can be restored in
+                            the future.
+                        </p>
+
+                    </div>
+
+                    <dl class="row">
+
+                        <dt class="col-sm-3">
+                            Project
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @Model.Name
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Description
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @(string.IsNullOrWhiteSpace(Model.Description)
+                                ? "-"
+                                : Model.Description)
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Priority
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @Model.ProjectPriorities
+                            .FirstOrDefault(x => x.Value == Model.ProjectPriorityId.ToString())?.Text
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Start Date
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @Model.StartDate.ToString("dd MMM yyyy")
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Target End
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @(Model.TargetEndDate?.ToString("dd MMM yyyy") ?? "-")
+                        </dd>
+
+                    </dl>
+
+                </div>
+
+                <div class="card-footer d-flex justify-content-between">
+
+                    <a asp-action="Details"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-outline-secondary">
+
+                        Cancel
+
+                    </a>
+
+                    <form asp-action="Archive"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="Id" type="hidden" />
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            <i class="bi bi-archive"></i>
+
+                            Archive Project
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

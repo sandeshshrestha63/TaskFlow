@@ -2,6 +2,7 @@
 {
     public class ProjectCreateRequest
     {
+        public int Id { get; set; }
         public int CompanyId { get; set; }
         public int CreatedByEmployeeId { get; set; }
         public string Name { get; set; }

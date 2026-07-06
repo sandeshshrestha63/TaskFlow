@@ -4,6 +4,7 @@ using TaskFlow.Constants;
 using TaskFlow.Data;
 using TaskFlow.Identity;
 using TaskFlow.Interfaces;
+using TaskFlow.Mapping;
 using TaskFlow.Models;
 using TaskFlow.SeedData;
 using TaskFlow.Services;
@@ -98,16 +99,30 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddScoped<EmployeeService>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 var app = builder.Build();
 //Runs once on the http request and clears out all the instance created to run it
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
+    var context = services.GetRequiredService<AppDbContext>();
+
+    // Apply all pending migrations first
+    await context.Database.MigrateAsync();
+
+    // Seed Identity (Roles, Admin User, etc.)
     await IdentitySeeder.SeedRolesAndAdminAsync(services);
+
+    // Seed application lookup data
+    await InitialSeeder.InitializeAsync(context);
 }
+
 //Please dont change the order let it stay as it is, otherwise it will break the code and the application will not run.
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

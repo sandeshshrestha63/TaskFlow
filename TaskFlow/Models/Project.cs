@@ -29,5 +29,6 @@
         public DateTime? UpdatedDate { get; set; }
 
         public bool IsDeleted { get; set; }
+        public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
     }
 }

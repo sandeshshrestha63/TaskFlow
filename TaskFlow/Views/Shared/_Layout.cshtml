@@ -95,6 +95,15 @@
                     <div class="tf-nav-section-label" style="margin-top: 8px">
                         Task Management
                     </div>
+                    <a asp-controller="Project" asp-action="Index"
+                       class="tf-nav-item @(ctrl == "Project" ? "active" : "")">
+                        <i class="bi bi-kanban tf-nav-icon"></i>
+                        <span>Projects</span>
+                    </a>
+                    
+                    <div class="tf-nav-section-label" style="margin-top: 8px">
+                        Task Management
+                    </div>
 
                     <a asp-controller="EmployeeTask" asp-action="Index"
                        class="tf-nav-item @(ctrl == "EmployeeTask" ? "active" : "")">

@@ -1,0 +1,85 @@
+﻿@model TaskFlow.ViewModels.Project.ProjectCreateVM
+
+<div class="row">
+
+    <div class="col-md-8">
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="mb-3">
+            <label asp-for="ProjectPriorityId" class="form-label"></label>
+
+            <select asp-for="ProjectPriorityId"
+                    asp-items="Model.ProjectPriorities"
+                    class="form-select">
+            </select>
+
+            <span asp-validation-for="ProjectPriorityId"
+                  class="text-danger"></span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="mb-3">
+
+    <label asp-for="Description" class="form-label"></label>
+
+    <textarea asp-for="Description"
+              rows="4"
+              class="form-control">
+    </textarea>
+
+    <span asp-validation-for="Description"
+          class="text-danger"></span>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-6">
+
+        <div class="mb-3">
+
+            <label asp-for="StartDate" class="form-label"></label>
+
+            <input asp-for="StartDate"
+                   class="form-control"
+                   type="date" />
+
+            <span asp-validation-for="StartDate"
+                  class="text-danger"></span>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="mb-3">
+
+            <label asp-for="TargetEndDate"
+                   class="form-label"></label>
+
+            <input asp-for="TargetEndDate"
+                   class="form-control"
+                   type="date" />
+
+            <span asp-validation-for="TargetEndDate"
+                  class="text-danger"></span>
+
+        </div>
+
+    </div>
+
+</div>

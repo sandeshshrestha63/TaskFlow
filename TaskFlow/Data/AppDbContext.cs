@@ -41,6 +41,8 @@ namespace TaskFlow.Data
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectStatus> ProjectStatus { get; set; }
         public DbSet<ProjectPriority> ProjectPriorities { get; set; }
+        public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
+        public DbSet<ProjectRole> ProjectRoles => Set<ProjectRole>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -168,6 +170,66 @@ namespace TaskFlow.Data
                 .WithMany(x => x.Projects)
                 .HasForeignKey(x => x.ProjectPriorityId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Project>()
+    .HasMany(x => x.ProjectMembers)
+    .WithOne(x => x.Project)
+    .HasForeignKey(x => x.ProjectId)
+    .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employee>()
+    .HasMany(x => x.ProjectMembers)
+    .WithOne(x => x.Employee)
+    .HasForeignKey(x => x.EmployeeId)
+    .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ProjectRole>()
+    .HasMany(x => x.ProjectMembers)
+    .WithOne(x => x.ProjectRole)
+    .HasForeignKey(x => x.ProjectRoleId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ProjectMember>(entity =>
+            {
+                entity.Property(x => x.DailyCapacityHours)
+                      .HasPrecision(5, 2);
+
+                entity.Property(x => x.AllocationPercent)
+                      .HasDefaultValue(100);
+
+                entity.Property(x => x.IsBillable)
+                      .HasDefaultValue(true);
+
+                entity.Property(x => x.IsActive)
+                      .HasDefaultValue(true);
+
+                entity.HasIndex(x => x.ProjectId);
+
+                entity.HasIndex(x => x.EmployeeId);
+
+                entity.HasIndex(x => x.ProjectRoleId);
+
+                entity.HasIndex(x => new
+                {
+                    x.ProjectId,
+                    x.EmployeeId
+                });
+            });
+
+            modelBuilder.Entity<ProjectRole>(entity =>
+            {
+                entity.Property(x => x.Name)
+                      .HasMaxLength(100);
+
+                entity.Property(x => x.Description)
+                      .HasMaxLength(500);
+
+                entity.Property(x => x.IsSystem)
+                      .HasDefaultValue(true);
+
+                entity.Property(x => x.IsActive)
+                      .HasDefaultValue(true);
+
+                entity.HasIndex(x => x.Name)
+                      .IsUnique();
+            });
 
             modelBuilder.Entity<Notification>()
                 .HasIndex(x => new

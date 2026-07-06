@@ -1,0 +1,228 @@
+﻿@model TaskFlow.ViewModels.Project.ProjectIndexVM
+
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="mb-1">Projects</h2>
+            <p class="text-muted mb-0">
+                Manage all company projects.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>
+            New Project
+        </a>
+
+    </div>
+
+    <!-- Search / Filters -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <form asp-action="Index" method="get">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-lg-5">
+                        <label asp-for="Search" class="form-label"></label>
+                        <input asp-for="Search"
+                               class="form-control"
+                               placeholder="Search by project name..." />
+                    </div>
+
+                    <div class="col-lg-2">
+                        <label asp-for="StatusId" class="form-label">
+                            Status
+                        </label>
+
+                        <select asp-for="StatusId"
+                                asp-items="Model.Statuses"
+                                class="form-select">
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <label asp-for="PriorityId" class="form-label">
+                            Priority
+                        </label>
+
+                        <select asp-for="PriorityId"
+                                asp-items="Model.Priorities"
+                                class="form-select">
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <div class="d-flex gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-primary w-100">
+                                <i class="bi bi-search"></i>
+                                Filter
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                Clear
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Project Table -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>Project</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Start Date</th>
+                            <th>Target End</th>
+                            <th>Created By</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.Projects.Any())
+                        {
+                            foreach (var project in Model.Projects)
+                            {
+                                <tr>
+
+                                    <td>
+                                        <strong>@project.Name</strong>
+
+                                        @if (!string.IsNullOrWhiteSpace(project.Description))
+                                        {
+                                            <br />
+                                            <small class="text-muted">
+                                                @project.Description
+                                            </small>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @project.StatusName
+                                    </td>
+
+                                    <td>
+                                        @project.PriorityName
+                                    </td>
+
+                                    <td>
+                                        @project.StartDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td>
+                                        @(project.TargetEndDate?.ToString("dd MMM yyyy") ?? "-")
+                                    </td>
+
+                                    <td>
+                                        @project.CreatedByName
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@project.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                            View
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@project.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-pencil"></i>
+                                            Edit
+                                        </a>
+                                        <a asp-action="Archive"
+                                           asp-route-id="@project.Id"
+                                           class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-archive"></i>
+                                            Archive
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="7" class="text-center py-5">
+
+                                    <i class="bi bi-folder2-open fs-1 text-muted"></i>
+
+                                    <h5 class="mt-3">
+                                        No Projects Found
+                                    </h5>
+
+                                    <p class="text-muted">
+                                        Create your first project to get started.
+                                    </p>
+
+                                    <a asp-action="Create"
+                                       class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i>
+                                        Create Project
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        @if (Model.Projects.Any())
+        {
+            <div class="card-footer bg-white">
+
+                <small class="text-muted">
+                    Showing <strong>@Model.Projects.Count</strong> project(s).
+                </small>
+
+            </div>
+        }
+
+    </div>
+
+</div>

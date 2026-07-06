@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskFlow.Data;
 
@@ -11,9 +12,11 @@ using TaskFlow.Data;
 namespace TaskFlow.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260701164322_removed_company_relation_from_project_status_and_priority")]
+    partial class removed_company_relation_from_project_status_and_priority
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -642,67 +645,6 @@ namespace TaskFlow.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("TaskFlow.Models.ProjectMember", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AllocationPercent")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(100);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("DailyCapacityHours")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<bool>("IsBillable")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<DateTime>("JoinedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LeftDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProjectRoleId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("ProjectRoleId");
-
-                    b.HasIndex("ProjectId", "EmployeeId");
-
-                    b.ToTable("ProjectMembers");
-                });
-
             modelBuilder.Entity("TaskFlow.Models.ProjectPriority", b =>
                 {
                     b.Property<int>("Id")
@@ -717,9 +659,6 @@ namespace TaskFlow.Migrations
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsDefault")
                         .HasColumnType("bit");
 
@@ -730,44 +669,6 @@ namespace TaskFlow.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectPriorities");
-                });
-
-            modelBuilder.Entity("TaskFlow.Models.ProjectRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<bool>("IsSystem")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("ProjectRoles");
                 });
 
             modelBuilder.Entity("TaskFlow.Models.ProjectStatus", b =>
@@ -1090,33 +991,6 @@ namespace TaskFlow.Migrations
                     b.Navigation("ProjectStatus");
                 });
 
-            modelBuilder.Entity("TaskFlow.Models.ProjectMember", b =>
-                {
-                    b.HasOne("TaskFlow.Models.Employee", "Employee")
-                        .WithMany("ProjectMembers")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TaskFlow.Models.Project", "Project")
-                        .WithMany("ProjectMembers")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TaskFlow.Models.ProjectRole", "ProjectRole")
-                        .WithMany("ProjectMembers")
-                        .HasForeignKey("ProjectRoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Project");
-
-                    b.Navigation("ProjectRole");
-                });
-
             modelBuilder.Entity("TaskFlow.Models.TaskActivity", b =>
                 {
                     b.HasOne("TaskFlow.Models.Employee", "Employee")
@@ -1167,8 +1041,6 @@ namespace TaskFlow.Migrations
                     b.Navigation("AssignedTasks");
 
                     b.Navigation("CreatedTasks");
-
-                    b.Navigation("ProjectMembers");
                 });
 
             modelBuilder.Entity("TaskFlow.Models.EmployeeTask", b =>
@@ -1190,19 +1062,9 @@ namespace TaskFlow.Migrations
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("TaskFlow.Models.Project", b =>
-                {
-                    b.Navigation("ProjectMembers");
-                });
-
             modelBuilder.Entity("TaskFlow.Models.ProjectPriority", b =>
                 {
                     b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("TaskFlow.Models.ProjectRole", b =>
-                {
-                    b.Navigation("ProjectMembers");
                 });
 
             modelBuilder.Entity("TaskFlow.Models.ProjectStatus", b =>
