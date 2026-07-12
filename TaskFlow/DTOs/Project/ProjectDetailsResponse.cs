@@ -26,6 +26,7 @@
         public DateTime CreatedDate { get; set; }
 
         public string CreatedByName { get; set; } = string.Empty;
+        public List<ProjectMemberSummaryResponse> Members { get; set; } = [];
 
     }
 }

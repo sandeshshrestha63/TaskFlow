@@ -1,0 +1,87 @@
+﻿@model TaskFlow.DTOs.Project.ProjectMemberSummaryResponse
+
+@{
+    ViewData["Title"] = "Remove Project Member";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-danger">
+
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        Remove Project Member
+                    </h4>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Are you sure you want to remove this member from the project?
+                    </div>
+
+                    <table class="table table-borderless">
+                        <tr>
+                            <th>Employee</th>
+                            <td>@Model.EmployeeName</td>
+                        </tr>
+
+                        <tr>
+                            <th>Email</th>
+                            <td>@Model.Email</td>
+                        </tr>
+
+                        <tr>
+                            <th>Project Role</th>
+                            <td>@Model.ProjectRole</td>
+                        </tr>
+
+                        <tr>
+                            <th>Allocation</th>
+                            <td>@Model.AllocationPercent %</td>
+                        </tr>
+
+                        <tr>
+                            <th>Daily Capacity</th>
+                            <td>@Model.DailyCapacityHours hrs</td>
+                        </tr>
+
+                        <tr>
+                            <th>Joined Date</th>
+                            <td>@Model.JoinedDate.ToString("dd MMM yyyy")</td>
+                        </tr>
+
+                        <tr>
+                            <th>Billable</th>
+                            <td>@(Model.IsBillable ? "Yes" : "No")</td>
+                        </tr>
+                    </table>
+
+                    <form asp-action="DeleteMember" method="post">
+                        <input asp-for="ProjectMemberId" type="hidden" />
+                        <input asp-for="ProjectId" type="hidden" />
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Details"
+                               asp-route-id="@Model.ProjectId"
+                               class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i>
+                                Remove Member
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

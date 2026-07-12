@@ -21,6 +21,9 @@
           crossorigin="anonymous"
           referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+
+    <link rel="stylesheet" href="~/lib/tom-select/css/tom-select.bootstrap5.css" />
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TaskFlow.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
@@ -298,6 +301,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="~/lib/tom-select/js/tom-select.complete.min.js"></script>
+    <script src="~/js/common/taskflow-select.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         // Sidebar toggle (mobile)

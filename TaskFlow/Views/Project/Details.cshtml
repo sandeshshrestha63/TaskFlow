@@ -3,7 +3,35 @@
 @{
     ViewData["Title"] = "Project Details";
 }
+<style>
+    .tf-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background-color: #0d6efd;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
 
+    .tf-member-card {
+        transition: all .2s ease;
+    }
+
+        .tf-member-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.08);
+        }
+
+    .tf-member-meta {
+        color: #6c757d;
+        font-size: .9rem;
+    }
+</style>
 <div class="container-fluid">
 
     <!-- Header -->
@@ -45,134 +73,10 @@
     </div>
 
     <div class="row">
-
-        <!-- General Information -->
-        <div class="col-lg-6 mb-4">
-
-            <div class="card shadow-sm border-0 h-100">
-
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">
-                        General Information
-                    </h5>
-                </div>
-
-                <div class="card-body">
-
-                    <table class="table table-borderless mb-0">
-
-                        <tr>
-                            <th style="width:40%">Status</th>
-                            <td>@Model.StatusName</td>
-                        </tr>
-
-                        <tr>
-                            <th>Priority</th>
-                            <td>@Model.PriorityName</td>
-                        </tr>
-
-                        <tr>
-                            <th>Created By</th>
-                            <td>@Model.CreatedByName</td>
-                        </tr>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Timeline -->
-        <div class="col-lg-6 mb-4">
-
-            <div class="card shadow-sm border-0 h-100">
-
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">
-                        Timeline
-                    </h5>
-                </div>
-
-                <div class="card-body">
-
-                    <table class="table table-borderless mb-0">
-
-                        <tr>
-                            <th style="width:40%">Start Date</th>
-                            <td>@Model.StartDate.ToString("dd MMM yyyy")</td>
-                        </tr>
-
-                        <tr>
-                            <th>Target End Date</th>
-                            <td>
-                                @(Model.TargetEndDate?.ToString("dd MMM yyyy") ?? "-")
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>Created Date</th>
-                            <td>@Model.CreatedDate.ToString("dd MMM yyyy")</td>
-                        </tr>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </div>
-
+        <!-- Project Overview -->
+        <partial name="Partial/_ProjectOverview" model="Model" />
     </div>
 
-    <!-- Placeholder for future modules -->
-    <div class="card border-0 shadow-sm">
-
-        <div class="card-header bg-white">
-            <h5 class="mb-0">
-                Upcoming Project Features
-            </h5>
-        </div>
-
-        <div class="card-body">
-
-            <div class="row text-center">
-
-                <div class="col-md-2 mb-3">
-                    <i class="bi bi-people fs-2 text-secondary"></i>
-                    <div>Members</div>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <i class="bi bi-kanban fs-2 text-secondary"></i>
-                    <div>Sprints</div>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <i class="bi bi-list-task fs-2 text-secondary"></i>
-                    <div>Tasks</div>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <i class="bi bi-clock-history fs-2 text-secondary"></i>
-                    <div>Activities</div>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <i class="bi bi-folder fs-2 text-secondary"></i>
-                    <div>Files</div>
-                </div>
-
-                <div class="col-md-2 mb-3">
-                    <i class="bi bi-bar-chart fs-2 text-secondary"></i>
-                    <div>Reports</div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+    <partial name="Partial/_ProjectMembers"
+             model="Model" />
 </div>

@@ -94,6 +94,10 @@ namespace TaskFlow.Services
                 .Include(x => x.ProjectStatus)
                 .Include(x => x.ProjectPriority)
                 .Include(x => x.CreatedByEmployee)
+                .Include(x => x.ProjectMembers.Where(a => a.IsActive))
+                    .ThenInclude(pm => pm.Employee)
+                .Include(x => x.ProjectMembers.Where(a => a.IsActive))
+                    .ThenInclude(pm => pm.ProjectRole)
                 .FirstOrDefaultAsync(x => x.Id == projectId && !x.IsDeleted);
 
             if (project == null)
@@ -101,9 +105,17 @@ namespace TaskFlow.Services
                 throw new ValidationException("The requested project could not be found.");
             }
 
-            return _mapper.Map<ProjectDetailsResponse>(project);
-        }
+            var response = _mapper.Map<ProjectDetailsResponse>(project);
 
+            response.MemberCount = response.Members.Count;
+
+            // Placeholder values until the related modules are implemented
+            response.TaskCount = 0;
+            response.ActiveSprintCount = 0;
+            response.ProgressPercentage = 0;
+
+            return response;
+        }
         public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
             var project = await _db.Projects

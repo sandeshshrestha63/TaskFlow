@@ -1,7 +1,9 @@
 ﻿namespace TaskFlow.DTOs.ProjectMember
 {
-    public class AddProjectMemberRequest
+    public class ProjectMemberRequest
     {
+        public int ProjectMemberId { get; set; }
+
         public int ProjectId { get; set; }
 
         public int EmployeeId { get; set; }

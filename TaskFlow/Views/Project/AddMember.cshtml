@@ -1,0 +1,168 @@
+﻿@model TaskFlow.ViewModels.Project.ProjectMemberFormVM
+
+@{
+    ViewData["Title"] = "Add Project Member";
+}
+
+<div class="container-fluid">
+
+    <div class="row mb-3">
+        <div class="col">
+            <h2>Add Project Member</h2>
+            <p class="text-muted">
+                Assign an employee to this project.
+            </p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form asp-action="AddMember" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="ProjectId" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="EmployeeId" class="form-label"></label>
+
+                        <select asp-for="EmployeeId"
+                                asp-items="Model.Employees"
+                                class="form-select tf-select"
+                                data-placeholder="Search employee...">
+
+                            <option value="">Search employee...</option>
+
+                        </select>
+
+                        <span asp-validation-for="EmployeeId"
+                              class="text-danger"></span>
+
+                    </div>
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="ProjectRoleId" class="form-label"></label>
+
+                        <select asp-for="ProjectRoleId"
+                                asp-items="Model.ProjectRoles"
+                                class="form-select tf-select"
+                                data-placeholder="Search project role...">
+
+                            <option value="">Search project role...</option>
+
+                        </select>
+
+                        <span asp-validation-for="ProjectRoleId"
+                              class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label asp-for="DailyCapacityHours" class="form-label"></label>
+
+                        <input asp-for="DailyCapacityHours"
+                               class="form-control" />
+
+                        <span asp-validation-for="DailyCapacityHours"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label asp-for="AllocationPercent" class="form-label"></label>
+
+                        <div class="input-group">
+
+                            <input asp-for="AllocationPercent"
+                                   class="form-control" />
+
+                            <span class="input-group-text">%</span>
+
+                        </div>
+
+                        <span asp-validation-for="AllocationPercent"
+                              class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label asp-for="JoinedDate" class="form-label"></label>
+
+                        <input asp-for="JoinedDate"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="JoinedDate"
+                              class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-4">
+
+                        <div class="form-check mt-4">
+
+                            <input asp-for="IsBillable"
+                                   class="form-check-input" />
+
+                            <label asp-for="IsBillable"
+                                   class="form-check-label">
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between">
+
+                    <a asp-action="Details"
+                       asp-route-id="@Model.ProjectId"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left"></i>
+                        Back to Project
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-person-plus-fill"></i>
+                        Add Member
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

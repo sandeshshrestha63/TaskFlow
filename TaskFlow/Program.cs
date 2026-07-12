@@ -100,6 +100,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IDateTimeService, DateTimeService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
 
 builder.Services.AddScoped<EmployeeService>();
 

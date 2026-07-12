@@ -1,4 +1,5 @@
 ﻿using System;
+using TaskFlow.ViewModels.Project.Details;
 
 namespace TaskFlow.ViewModels.Project
 {
@@ -28,5 +29,10 @@ namespace TaskFlow.ViewModels.Project
         public DateTime CreatedDate { get; set; }
 
         public string CreatedByName { get; set; } = string.Empty;
+        
+        public int BillableMemberCount => Members.Count(x => x.IsBillable);
+
+        public int NonBillableMemberCount => Members.Count(x => !x.IsBillable);
+        public List<ProjectMemberSummaryVM> Members { get; set; } = [];
     }
 }

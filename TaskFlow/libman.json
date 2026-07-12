@@ -1,0 +1,14 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "tom-select@2.6.1",
+      "destination": "wwwroot/lib/tom-select/",
+      "files": [
+        "css/tom-select.bootstrap5.css",
+        "js/tom-select.complete.min.js"
+      ]
+    }
+  ]
+}

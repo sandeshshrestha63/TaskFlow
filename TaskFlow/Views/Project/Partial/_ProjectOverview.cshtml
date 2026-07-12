@@ -1,0 +1,83 @@
+﻿@model TaskFlow.ViewModels.Project.ProjectDetailsVM
+
+<div class="row">
+
+    <!-- General Information -->
+    <div class="col-lg-6 mb-4">
+
+        <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    General Information
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-borderless mb-0">
+
+                    <tr>
+                        <th style="width:40%">Status</th>
+                        <td>@Model.StatusName</td>
+                    </tr>
+
+                    <tr>
+                        <th>Priority</th>
+                        <td>@Model.PriorityName</td>
+                    </tr>
+
+                    <tr>
+                        <th>Created By</th>
+                        <td>@Model.CreatedByName</td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Timeline -->
+    <div class="col-lg-6 mb-4">
+
+        <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    Timeline
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-borderless mb-0">
+
+                    <tr>
+                        <th style="width:40%">Start Date</th>
+                        <td>@Model.StartDate.ToString("dd MMM yyyy")</td>
+                    </tr>
+
+                    <tr>
+                        <th>Target End Date</th>
+                        <td>
+                            @(Model.TargetEndDate?.ToString("dd MMM yyyy") ?? "-")
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Created Date</th>
+                        <td>@Model.CreatedDate.ToString("dd MMM yyyy")</td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
