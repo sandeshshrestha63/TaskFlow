@@ -46,6 +46,8 @@ namespace TaskFlow.Models
 
         public Company Company { get; set; }
 
+        public virtual Sprint? Sprint { get; set; }
+
         public Employee CreatedByEmployee { get; set; }
 
         public Employee AssignedToEmployee { get; set; }

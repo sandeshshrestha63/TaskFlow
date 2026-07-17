@@ -29,6 +29,7 @@
         public DateTime? UpdatedDate { get; set; }
 
         public bool IsDeleted { get; set; }
+        public virtual ICollection<Sprint> Sprints { get; set; } = new List<Sprint>();
         public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
     }
 }

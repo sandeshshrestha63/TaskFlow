@@ -43,6 +43,8 @@ namespace TaskFlow.Data
         public DbSet<ProjectPriority> ProjectPriorities { get; set; }
         public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
         public DbSet<ProjectRole> ProjectRoles => Set<ProjectRole>();
+        public DbSet<Sprint> Sprints { get; set; }
+        public DbSet<SprintStatus> SprintStatuses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -229,6 +231,89 @@ namespace TaskFlow.Data
 
                 entity.HasIndex(x => x.Name)
                       .IsUnique();
+            });
+            modelBuilder.Entity<SprintStatus>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.BadgeColor)
+                    .HasMaxLength(30);
+
+                entity.HasMany(e => e.Sprints)
+                    .WithOne(e => e.SprintStatus)
+                    .HasForeignKey(e => e.SprintStatusId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<Sprint>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Goal)
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("GETUTCDATE()");
+
+
+                entity.HasOne(e => e.Project)
+                    .WithMany(p => p.Sprints)
+                    .HasForeignKey(e => e.ProjectId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.SprintStatus)
+                    .WithMany(s => s.Sprints)
+                    .HasForeignKey(e => e.SprintStatusId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.CreatedByEmployee)
+                    .WithMany()
+                    .HasForeignKey(e => e.CreatedByEmployeeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.UpdatedByEmployee)
+                    .WithMany()
+                    .HasForeignKey(e => e.UpdatedByEmployeeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.DeletedByEmployee)
+                    .WithMany()
+                    .HasForeignKey(e => e.DeletedByEmployeeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(e => e.Tasks)
+                    .WithOne(t => t.Sprint)
+                    .HasForeignKey(t => t.SprintId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+
+
+                entity.HasIndex(e => new
+                {
+                    e.ProjectId,
+                    e.Name
+                }).IsUnique();
+
+                entity.HasIndex(e => e.ProjectId);
+
+                entity.HasIndex(e => e.SprintStatusId);
+
+                entity.HasIndex(e => new
+                {
+                    e.StartDate,
+                    e.EndDate
+                });
+
             });
 
             modelBuilder.Entity<Notification>()
